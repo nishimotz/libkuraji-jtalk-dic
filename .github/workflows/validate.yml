@@ -1,0 +1,21 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate-csv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Validate dictionary CSV sources (no mecab-dict-index needed)
+        run: python src/nvdajp-jtalk-dic/make_jdic.py --validate-only
+
+# Building sys.dic requires a compiled mecab-dict-index (MeCab, BSD/LGPL/GPL
+# tri-license); that build is not yet wired into this repository's CI. See
+# README.md.

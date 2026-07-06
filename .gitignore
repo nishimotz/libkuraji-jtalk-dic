@@ -1,0 +1,4 @@
+build/
+output/
+__pycache__/
+src/nvdajp-jtalk-dic/naist-jdic-source/_temp/
