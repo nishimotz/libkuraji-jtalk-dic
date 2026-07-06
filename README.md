@@ -11,7 +11,7 @@ JTalk 拡張辞書（NAIST-JDIC + nvdajp 独自拡張）のビルドレシピ。
 ## リポジトリの中身
 
 - `src/nvdajp-jtalk-dic/`: 辞書ビルドスクリプト（`make_jdic.py` ほか）と NAIST-JDIC ソース・nvdajp 拡張データ（`naist-jdic-source/`）
-- ビルド済みの `sys.dic` バイナリ自体はこのリポジトリには含まない（GitHub Releases での配布を予定、未実装）
+- ビルド済みの辞書バイナリ一式（`sys.dic`、`matrix.bin`、`char.bin`、`unk.dic`、`dicrc`、`DIC_VERSION` — 6 ファイルすべてが揃って初めて MeCab が読み込める）はこのリポジトリには含まない（GitHub Releases での配布を予定、未実装。配布時は 1 ファイルではなくディレクトリ／アーカイブ単位で扱う）
 
 ## ビルド方法
 
