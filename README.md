@@ -29,6 +29,24 @@ python src/nvdajp-jtalk-dic/make_jdic.py --mecab-dict-index /path/to/mecab-dict-
 python src/nvdajp-jtalk-dic/make_jdic.py --validate-only
 ```
 
+## ユーザー辞書（独自語彙の追加）
+
+固有名詞や専門用語など、ベース辞書に無い語を追加して読み・分かち書きを正しくするためのユーザー辞書を、ビルド済みの `sys.dic` に対してコンパイルできます。libkuraji・JTalk のどちらの利用者にも共通して使える機能です。
+
+```console
+python src/nvdajp-jtalk-dic/build_userdic.py \
+  --mecab-dict-index /path/to/mecab-dict-index.exe \
+  --dic-dir build/dic \
+  --csv examples/userdic/sample.csv \
+  --outfile build/jtusr.dic
+```
+
+CSV の書式は `examples/userdic/sample.csv` を参照。品詞 ID は自動採番ではなく `0,0`（文頭/文末）＋人手調整コストで指定する（naist-jdic は自動採番に必要な CRF モデルを含まないため）。品詞別 ID への移行は今後の課題（nvdajp roadmap タスク 2.8 として追跡）。
+
+生成された `jtusr.dic` は `--dic-dir` に指定したのと同じベース辞書と組み合わせて読み込む必要がある（MeCab はバージョン・文字コード・連接コスト表サイズの一致を検査するため）。ベース辞書を再ビルドしたら、ユーザー辞書も再ビルドすること。
+
+動作確認済み: 生成した `jtusr.dic` を nvdajp の `translator2` に読み込ませ、サンプルエントリの読みが優先されることを確認済み。
+
 ## ライセンス
 
 BSD 3-Clause License. 詳細は [LICENSE](LICENSE) を参照。NAIST-JDIC・MeCab のライセンス表記も同ファイルに含む。
