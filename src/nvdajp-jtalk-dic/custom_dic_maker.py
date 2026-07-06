@@ -1709,7 +1709,10 @@ jdic = [
 	["viewing", "ビューイング"],
 	["homepage", "ホームページ"],
 	["tiflotecnia", "ティフロテクニア"],
-	["pokémon go", "pokemon ゴー"],
+	# split into two morphemes (not one merged phrase) so translator2 can
+	# still mark the word boundary in braille output between them
+	["pokémon", "pokemon"],
+	["go", "ゴー"],
 	["possibility", "ポッシビリティー"],
 	["seas", "シーズ"],
 	["words", "ワーズ"],
