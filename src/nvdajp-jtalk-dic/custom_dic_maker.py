@@ -11,6 +11,32 @@ open_file = lambda name, mode, encoding: open(name, mode, encoding=encoding)
 
 from pathlib import Path
 
+# nvdajp's text2mecab_convert() (source/synthDrivers/jtalk/text2mecab.py)
+# converts every printable ASCII character to its fullwidth (zenkaku)
+# equivalent before MeCab ever sees the text (e.g. "manage" -> "ｍａｎａｇｅ",
+# "'" -> "’"). A dictionary entry whose surface form is halfwidth ASCII can
+# therefore never match real input and is a dead entry. _to_mecab_surface()
+# applies the same mapping so entries written here as plain ASCII (for
+# readability) are stored in the form MeCab actually needs to match.
+_ASCII_TO_ZENKAKU = {
+	" ": "　", "!": "！", '"': "”", "#": "＃", "$": "＄", "%": "％", "&": "＆",
+	"'": "’", "(": "（", ")": "）", "*": "＊", "+": "＋", ",": "，", "-": "−",
+	".": "．", "/": "／", "0": "０", "1": "１", "2": "２", "3": "３", "4": "４",
+	"5": "５", "6": "６", "7": "７", "8": "８", "9": "９", ":": "：", ";": "；",
+	"<": "＜", "=": "＝", ">": "＞", "?": "？", "@": "＠",
+	"[": "［", "\\": "￥", "]": "］", "^": "＾", "_": "＿", "`": "‘",
+	"{": "｛", "|": "｜", "}": "｝", "~": "〜",
+}
+for _c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+	_ASCII_TO_ZENKAKU[_c] = chr(ord(_c) - ord("A") + ord("Ａ"))
+for _c in "abcdefghijklmnopqrstuvwxyz":
+	_ASCII_TO_ZENKAKU[_c] = chr(ord(_c) - ord("a") + ord("ａ"))
+_ASCII_TO_ZENKAKU = str.maketrans(_ASCII_TO_ZENKAKU)
+
+
+def _to_mecab_surface(s: str) -> str:
+	return s.translate(_ASCII_TO_ZENKAKU)
+
 
 jdic = [
 	# first item should use fullshape(zenkaku) charactors
@@ -1744,7 +1770,7 @@ def make_dic(CODE, THISDIR):
 		for i in jdic:
 			di = DicItem(i)
 			k = di.text
-			k1 = k
+			k1 = _to_mecab_surface(k)
 			y = di.speech
 			mora_count = len(y)
 			# アクセント位置を省略すると "0/(文字数)" になる
