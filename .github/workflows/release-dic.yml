@@ -34,7 +34,7 @@ jobs:
           $zipName = "jtalk-dic-$tag.zip"
           Compress-Archive -Path build/dic/* -DestinationPath $zipName
           $hash = (Get-FileHash $zipName -Algorithm SHA256).Hash.ToLower()
-          "$hash  $zipName" | Out-File -Encoding ascii "$zipName.sha256"
+          Set-Content -Path "$zipName.sha256" -Value "$hash  $zipName" -Encoding ascii -NoNewline
           echo "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
       - name: Publish mecab-dict-index.exe as its own release asset
         shell: pwsh
@@ -43,7 +43,7 @@ jobs:
           $exeName = "mecab-dict-index-$tag.exe"
           Copy-Item src/mecab-src/src/mecab-dict-index.exe $exeName
           $hash = (Get-FileHash $exeName -Algorithm SHA256).Hash.ToLower()
-          "$hash  $exeName" | Out-File -Encoding ascii "$exeName.sha256"
+          Set-Content -Path "$exeName.sha256" -Value "$hash  $exeName" -Encoding ascii -NoNewline
           echo "EXE_NAME=$exeName" >> $env:GITHUB_ENV
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
