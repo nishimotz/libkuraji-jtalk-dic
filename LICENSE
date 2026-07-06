@@ -39,9 +39,16 @@ It also contains, under src/nvdajp-jtalk-dic/naist-jdic-source/:
   right-id.def, unk.def, dicrc): Copyright (c) 2009, Nara Institute of
   Science and Technology, Japan. See COPYING in that directory
   (modified BSD).
-- COPYING-mecab: the MeCab license notice (BSD/LGPL/GPL tri-license;
-  this repository uses the BSD terms), included here because building
-  the dictionary requires mecab-dict-index from MeCab.
+
+It also contains, under src/mecab-src/ (vendored from the Open JTalk
+project's fork of MeCab, used to build the mecab-dict-index tool that
+compiles the dictionary above):
+- Copyright (c) 2001-2008, Taku Kudo; Copyright (c) 2004-2008, Nippon
+  Telegraph and Telephone Corporation (MeCab core; BSD/LGPL/GPL
+  tri-license, this repository uses the BSD terms). See src/mecab-src/COPYING.
+- Additional Open JTalk-specific modifications: Copyright (c) 2008-2011
+  Nagoya Institute of Technology, Department of Computer Science
+  (same license terms; see file headers under src/mecab-src/src/).
 
 All of the above are compatible with this repository's BSD 3-Clause
 license.

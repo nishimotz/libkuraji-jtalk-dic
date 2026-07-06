@@ -1,0 +1,39 @@
+name: build-dic
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+      - name: Build mecab-dict-index (mecab.lib + mecab-dict-index.exe only; no DLL needed)
+        working-directory: src/mecab-src/src
+        run: nmake /f Makefile.mak MACHINE=x64 mecab.lib mecab-dict-index.exe
+      - name: Build the base dictionary (sys.dic etc.)
+        run: >
+          python src/nvdajp-jtalk-dic/make_jdic.py
+          --mecab-dict-index src/mecab-src/src/mecab-dict-index.exe
+          --outdir build/dic
+      - name: Smoke-test the user-dictionary builder against the built base dictionary
+        run: >
+          python src/nvdajp-jtalk-dic/build_userdic.py
+          --mecab-dict-index src/mecab-src/src/mecab-dict-index.exe
+          --dic-dir build/dic
+          --csv examples/userdic/sample.csv
+          --outfile build/jtusr.dic
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jtalk-dic
+          path: |
+            build/dic
+            build/jtusr.dic

@@ -2,3 +2,10 @@ build/
 output/
 __pycache__/
 src/nvdajp-jtalk-dic/naist-jdic-source/_temp/
+src/mecab-src/src/*.obj
+src/mecab-src/src/*.lib
+src/mecab-src/src/*.exe
+src/mecab-src/src/*.dll
+src/mecab-src/src/*.exp
+src/mecab-src/src/*.pdb
+src/mecab-src/src/*.ilk

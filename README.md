@@ -11,19 +11,31 @@ JTalk 拡張辞書（NAIST-JDIC + nvdajp 独自拡張）のビルドレシピ。
 ## リポジトリの中身
 
 - `src/nvdajp-jtalk-dic/`: 辞書ビルドスクリプト（`make_jdic.py` ほか）と NAIST-JDIC ソース・nvdajp 拡張データ（`naist-jdic-source/`）
+- `src/mecab-src/`: 辞書コンパイラ `mecab-dict-index` をビルドするための MeCab ソース（Open JTalk のフォーク）。Windows/MSVC 専用（`Makefile.mak`, nmake ビルド）。
 - ビルド済みの辞書バイナリ一式（`sys.dic`、`matrix.bin`、`char.bin`、`unk.dic`、`dicrc`、`DIC_VERSION` — 6 ファイルすべてが揃って初めて MeCab が読み込める）はこのリポジトリには含まない（GitHub Releases での配布を予定、未実装。配布時は 1 ファイルではなくディレクトリ／アーカイブ単位で扱う）
 
 ## ビルド方法
 
-辞書のコンパイルには MeCab の `mecab-dict-index` 実行ファイルが必要です。このリポジトリには含まれていません（ビルドは別途 MeCab ソースから、または nvdajp チェックアウトで `scons jtalkSync` を実行して用意してください）。
+### 1. mecab-dict-index のビルド（Windows + MSVC が必要）
 
 ```console
-python src/nvdajp-jtalk-dic/make_jdic.py --mecab-dict-index /path/to/mecab-dict-index.exe --outdir build/dic
+cd src/mecab-src/src
+nmake /f Makefile.mak MACHINE=x64 mecab.lib mecab-dict-index.exe
+```
+
+`libmecab.dll`（DLL ターゲット）は不要なのでビルドしない。CI（`.github/workflows/build-dic.yml`）は `ilammy/msvc-dev-cmd` で MSVC 環境を用意し、Windows ランナー上でこのコマンドを実行して検証している。
+
+**注意**: このソースは Open JTalk 由来のフォークで、`nishimotz/libopenjtalk` リポジトリのソースとは系統が異なる（試したところ、後者は現行 MSVC でのビルドに問題があった）。`nvdajp` 本体が実際に使っているのと同じソース（`miscDepsJp/include/python-jtalk/libopenjtalk/mecab`）をここに同梱している。
+
+### 2. 辞書のビルド
+
+```console
+python src/nvdajp-jtalk-dic/make_jdic.py --mecab-dict-index src/mecab-src/src/mecab-dict-index.exe --outdir build/dic
 ```
 
 生成される `build/dic/` に `sys.dic`、`matrix.bin`、`char.bin`、`unk.dic`、`dicrc`、`DIC_VERSION` が出力されます。動作確認済み（nvdajp の `translator2` に読み込ませて分かち書き・点訳できることを確認済み）。
 
-`mecab-dict-index` を用意できない場合でも、CSV ソース（nvdajp 拡張エントリの品詞 ID 解決など）だけを検証できます。CI はこのモードを実行しています。
+`mecab-dict-index` を用意できない場合でも、CSV ソース（nvdajp 拡張エントリの品詞 ID 解決など）だけを検証できます。
 
 ```console
 python src/nvdajp-jtalk-dic/make_jdic.py --validate-only
@@ -35,7 +47,7 @@ python src/nvdajp-jtalk-dic/make_jdic.py --validate-only
 
 ```console
 python src/nvdajp-jtalk-dic/build_userdic.py \
-  --mecab-dict-index /path/to/mecab-dict-index.exe \
+  --mecab-dict-index src/mecab-src/src/mecab-dict-index.exe \
   --dic-dir build/dic \
   --csv examples/userdic/sample.csv \
   --outfile build/jtusr.dic
@@ -53,4 +65,10 @@ BSD 3-Clause License. 詳細は [LICENSE](LICENSE) を参照。NAIST-JDIC・MeCa
 
 ## nvdajp との関係
 
-このリポジトリは nvdajp の `miscDepsJp/jptools/jtalk/` 配下から辞書ビルドレシピを抽出したものです。nvdajp 自身のビルド（`scons jtalkSync`）は現時点ではこのリポジトリに依存せず、従来どおり内部のコピーでビルドします（今後、このリポジトリの成果物に一本化する可能性があります）。
+このリポジトリは nvdajp の `miscDepsJp/jptools/jtalk/`（レシピ）と `miscDepsJp/include/python-jtalk/libopenjtalk/mecab/`（MeCab ソース）から抽出したものです。nvdajp 自身のビルド（`scons jtalkSync`）は現時点ではこのリポジトリに依存せず、従来どおり内部のコピーでビルドします。
+
+nvdajp 側では「JTalk 領域は外部取得なしで完全統合管理する」という方針が原則ですが、この辞書は JTalk と libkuraji の共有資産であるため、ビルド時に本リポジトリの成果物を任意で取得できるようにする方針転換を行っています。詳細は nvdajp の `projectDocs/jp/vendor-submodules.md`（「辞書のビルド時取得（方針転換）」節）を参照してください。
+
+## CI
+
+`.github/workflows/build-dic.yml` が Windows ランナー上で mecab-dict-index のビルド → 辞書ビルド → ユーザー辞書ビルドまで一気通貫で検証します（GitHub Releases への添付は未実装）。`.github/workflows/validate.yml` は MeCab 不要の CSV 検証のみを Ubuntu で実行します。
