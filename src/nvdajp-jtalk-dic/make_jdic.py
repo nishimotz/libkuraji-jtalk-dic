@@ -11,6 +11,13 @@
 # mecab-dict-index is not vendored here: build it from MeCab source (BSD/
 # LGPL/GPL tri-license) or obtain it from an nvdajp checkout after running
 # `scons jtalkSync`.
+#
+# Unlike nvdajp's own build, this does not include the English word-reading
+# entries (nvdajp-eng-dic.csv, built from bep-eng.dic by eng_dic_maker.py in
+# nvdajp): bep-eng.dic is a third-party GPL-licensed dictionary (from the
+# CPAN module Lingua::JA::Yomi), incompatible with this repository's BSD
+# 3-Clause license. That is not a problem for nvdajp itself (nvdajp as a
+# whole is GPL-licensed), but it is for a BSD-licensed extraction.
 
 import argparse
 import os
@@ -21,7 +28,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import custom_dic_maker
-import eng_dic_maker
 import tankan_dic_maker
 from filter_jdic import filter_jdic
 
@@ -153,7 +159,6 @@ def _parse_args():
 def _main():
 	args = _parse_args()
 	jtdir = Path(__file__).resolve().parent
-	engdic = jtdir / "bep-eng.dic"
 	cs_file = jtdir / "characters-ja.dic"
 
 	thisdir = jtdir / "naist-jdic-source"
@@ -171,13 +176,11 @@ def _main():
 		mkdir_p(outdir)
 		mkdir_p(tempdir)
 
-		eng_dic_maker.make_dic(engdic, code, thisdir)
 		tankan_dic_maker.make_dic(code, cs_file, thisdir)
 		custom_dic_maker.make_dic(code, thisdir)
 
 		files = [
 			"dicrc",
-			"nvdajp-eng-dic.csv",
 			"nvdajp-tankan-dic.csv",
 			"nvdajp-custom-dic.csv",
 		]
@@ -213,7 +216,7 @@ def _main():
 
 		_validate_custom_pos(
 			tempdir,
-			["nvdajp-eng-dic.csv", "nvdajp-tankan-dic.csv", "nvdajp-custom-dic.csv"],
+			["nvdajp-tankan-dic.csv", "nvdajp-custom-dic.csv"],
 		)
 
 		if args.validate_only:

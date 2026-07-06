@@ -2,7 +2,9 @@
 
 JTalk 拡張辞書（NAIST-JDIC + nvdajp 独自拡張）のビルドレシピ。
 
-この辞書は Open JTalk 系の日本語形態素解析辞書 [NAIST-JDIC](http://naist-jdic.sourceforge.jp/) をベースに、NVDA 日本語版（nvdajp）が読み・アクセント推定の改善と点訳表記フィールドのために追加した拡張エントリ（`nvdajp-custom-dic`、`nvdajp-tankan-dic`、`nvdajp-eng-dic`）を加えたものです。
+この辞書は Open JTalk 系の日本語形態素解析辞書 [NAIST-JDIC](http://naist-jdic.sourceforge.jp/) をベースに、NVDA 日本語版（nvdajp）が読み・アクセント推定の改善と点訳表記フィールドのために追加した拡張エントリ（`nvdajp-custom-dic`、`nvdajp-tankan-dic`）を加えたものです。
+
+**nvdajp 本体との差分**: nvdajp は英単語の読み推定用に `nvdajp-eng-dic`（`bep-eng.dic` から生成）も追加していますが、`bep-eng.dic` は第三者（CPAN モジュール `Lingua::JA::Yomi`、著作者 M.Ohtsuka/mash）の GPL ライセンスのデータであり、GPL 全体である nvdajp では問題ありませんが、本リポジトリは BSD 3-Clause として公開しているため同梱していません。英単語の読み精度は nvdajp 本体のビルドに劣る場合があります。
 
 **この辞書は単一のプロジェクトの所有物ではなく、共有資産です:**
 - **JTalk**（[nvdajp](https://github.com/nvdajp/nvdajp) の音声合成エンジン）が読み・アクセント推定に使用します。
