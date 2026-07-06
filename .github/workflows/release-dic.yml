@@ -1,0 +1,51 @@
+name: release-dic
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+      - name: Build mecab-dict-index (mecab.lib + mecab-dict-index.exe only; no DLL needed)
+        working-directory: src/mecab-src/src
+        run: nmake /f Makefile.mak MACHINE=x64 mecab.lib mecab-dict-index.exe
+      - name: Build the base dictionary (sys.dic etc.)
+        run: >
+          python src/nvdajp-jtalk-dic/make_jdic.py
+          --mecab-dict-index src/mecab-src/src/mecab-dict-index.exe
+          --outdir build/dic
+      - name: Package the dictionary as a zip archive
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $zipName = "jtalk-dic-$tag.zip"
+          Compress-Archive -Path build/dic/* -DestinationPath $zipName
+          $hash = (Get-FileHash $zipName -Algorithm SHA256).Hash.ToLower()
+          "$hash  $zipName" | Out-File -Encoding ascii "$zipName.sha256"
+          echo "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ env.ZIP_NAME }}
+            ${{ env.ZIP_NAME }}.sha256
+          body: |
+            JTalk extended dictionary (NAIST-JDIC + nvdajp custom entries), built from this
+            repository's recipe. Contains sys.dic, matrix.bin, char.bin, unk.dic, dicrc,
+            DIC_VERSION -- all six files are required together.
+
+            See DIC_VERSION inside the archive for the exact build timestamp, and
+            ${{ env.ZIP_NAME }}.sha256 for the archive checksum.
