@@ -36,12 +36,23 @@ jobs:
           $hash = (Get-FileHash $zipName -Algorithm SHA256).Hash.ToLower()
           "$hash  $zipName" | Out-File -Encoding ascii "$zipName.sha256"
           echo "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
+      - name: Publish mecab-dict-index.exe as its own release asset
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $exeName = "mecab-dict-index-$tag.exe"
+          Copy-Item src/mecab-src/src/mecab-dict-index.exe $exeName
+          $hash = (Get-FileHash $exeName -Algorithm SHA256).Hash.ToLower()
+          "$hash  $exeName" | Out-File -Encoding ascii "$exeName.sha256"
+          echo "EXE_NAME=$exeName" >> $env:GITHUB_ENV
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             ${{ env.ZIP_NAME }}
             ${{ env.ZIP_NAME }}.sha256
+            ${{ env.EXE_NAME }}
+            ${{ env.EXE_NAME }}.sha256
           body: |
             JTalk extended dictionary (NAIST-JDIC + nvdajp custom entries), built from this
             repository's recipe. Contains sys.dic, matrix.bin, char.bin, unk.dic, dicrc,
@@ -49,3 +60,8 @@ jobs:
 
             See DIC_VERSION inside the archive for the exact build timestamp, and
             ${{ env.ZIP_NAME }}.sha256 for the archive checksum.
+
+            Also includes mecab-dict-index.exe, the dictionary compiler used to build
+            the above (and usable to build a jtusr.dic user dictionary with
+            build_userdic.py). This binary is unsigned; verify it against
+            ${{ env.EXE_NAME }}.sha256 before use.

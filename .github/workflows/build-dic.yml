@@ -37,3 +37,4 @@ jobs:
           path: |
             build/dic
             build/jtusr.dic
+            src/mecab-src/src/mecab-dict-index.exe
