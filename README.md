@@ -4,7 +4,7 @@ JTalk 拡張辞書（NAIST-JDIC + nvdajp 独自拡張）のビルドレシピ。
 
 この辞書は Open JTalk 系の日本語形態素解析辞書 [NAIST-JDIC](http://naist-jdic.sourceforge.jp/) をベースに、NVDA 日本語版（nvdajp）が読み・アクセント推定の改善と点訳表記フィールドのために追加した拡張エントリ（`nvdajp-custom-dic`、`nvdajp-tankan-dic`）を加えたものです。
 
-**nvdajp 本体との差分**: nvdajp は英単語の読み推定用に `nvdajp-eng-dic`（`bep-eng.dic` から生成）も追加していますが、`bep-eng.dic` は第三者（CPAN モジュール `Lingua::JA::Yomi`、著作者 M.Ohtsuka/mash）の GPL ライセンスのデータであり、GPL 全体である nvdajp では問題ありませんが、本リポジトリは BSD 3-Clause として公開しているため同梱していません。英単語の読み精度は nvdajp 本体のビルドに劣る場合があります。
+**nvdajp 本体との差分**: nvdajp は英単語の読み推定用に `nvdajp-eng-dic`（`bep-eng.dic` から生成）も追加していますが、`bep-eng.dic` は第三者（CPAN モジュール `Lingua::JA::Yomi`、著作者 M.Ohtsuka/mash）の GPL ライセンスのデータであり、GPL 全体である nvdajp では問題ありませんが、本リポジトリは BSD 3-Clause として公開しているため同梱していません。代わりに、本リポジトリ独自の `nvdajp-eng-dic`（`eng_dic_maker.py`、permissive ライセンスの [CMUdict](https://github.com/cmusphinx/cmudict) から ARPAbet 発音記号をルールベースでカナに変換して生成、詳細は `src/nvdajp-jtalk-dic/eng-dic-source/README.md`）を同梱しています。bep-eng.dic 由来の読みとは一致しません（変換ルールの精度については同ディレクトリの `arpabet_to_kana.py` のモジュール docstring を参照）。
 
 **この辞書は単一のプロジェクトの所有物ではなく、共有資産です:**
 - **JTalk**（[nvdajp](https://github.com/nvdajp/nvdajp) の音声合成エンジン）が読み・アクセント推定に使用します。
