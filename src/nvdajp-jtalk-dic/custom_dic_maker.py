@@ -1809,7 +1809,13 @@ jdic = [
 	["obviously", "オブビアスリー"],
 	["recently", "リーセントゥリー"],
 	["instagram", "インスタグラム"],
+	["firefox", "ファイアフォックス"],
+	["firewall", "ファイアウォール"],
+	["power", "パワー"],
+	["powerpoint", "パワーポイント"],
+	["dryer", "ドライヤー"],
 ]
+
 
 
 class DicItem(object):
