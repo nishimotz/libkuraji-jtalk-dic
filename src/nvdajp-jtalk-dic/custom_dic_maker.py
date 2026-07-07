@@ -1689,6 +1689,12 @@ jdic = [
 	["nvaccess", "エヌブイアクセス"],
 	# nvda: not an English word, so it's absent from CMUdict / nvdajp-eng-dic.
 	["nvda", "エヌブイディーエー"],
+	# High-frequency NVDA UI words from actual usage (not in top-50k frequency list)
+	["edit", "エディット"],
+	["digital", "デジタル"],
+	["images", "イメージャズ"],
+	["family", "ファミリー"],
+	["language", "ランゲージ"],
 	["runtime", "ランタイム"],
 	["smap", "スマップ"],
 	["game", "ゲイム"],
