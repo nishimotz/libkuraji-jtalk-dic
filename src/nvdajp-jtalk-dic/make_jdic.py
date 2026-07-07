@@ -28,6 +28,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import custom_dic_maker
+import eng_dic_maker
 import tankan_dic_maker
 from filter_jdic import filter_jdic
 
@@ -178,11 +179,13 @@ def _main():
 
 		tankan_dic_maker.make_dic(code, cs_file, thisdir)
 		custom_dic_maker.make_dic(code, thisdir)
+		eng_dic_maker.make_dic(code, thisdir)
 
 		files = [
 			"dicrc",
 			"nvdajp-tankan-dic.csv",
 			"nvdajp-custom-dic.csv",
+			"nvdajp-eng-dic.csv",
 		]
 
 		euc_files = [
@@ -216,7 +219,7 @@ def _main():
 
 		_validate_custom_pos(
 			tempdir,
-			["nvdajp-tankan-dic.csv", "nvdajp-custom-dic.csv"],
+			["nvdajp-tankan-dic.csv", "nvdajp-custom-dic.csv", "nvdajp-eng-dic.csv"],
 		)
 
 		if args.validate_only:
