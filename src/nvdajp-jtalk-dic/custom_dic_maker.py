@@ -1687,6 +1687,8 @@ jdic = [
 	["quick", "クイック"],
 	["quickly", "クイックリィ"],
 	["nvaccess", "エヌブイアクセス"],
+	# nvda: not an English word, so it's absent from CMUdict / nvdajp-eng-dic.
+	["nvda", "エヌブイディーエー"],
 	["runtime", "ランタイム"],
 	["smap", "スマップ"],
 	["game", "ゲイム"],

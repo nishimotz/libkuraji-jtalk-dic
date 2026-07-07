@@ -124,6 +124,27 @@ def _morae_with_stress(phonemes):
                 result.append(("ー", None))
                 i += 2
                 continue
+            # T/D immediately followed by S/Z (adjacent, no vowel between)
+            # is the English "-ts"/"-dz" affricate ending (lights, results,
+            # insights, words...): a single "ツ"/"ズ" mora, not two separate
+            # codas (avoids "insights" -> インサイトス instead of インサイツ).
+            if ph == "T" and nxt == "S":
+                result.append(("ツ", None))
+                i += 2
+                continue
+            if ph == "D" and nxt == "Z":
+                result.append(("ズ", None))
+                i += 2
+                continue
+            # consonant + IY/UW: these are inherently long vowels (unlike
+            # IH/UH, which share the same combining key "i"/"u"), so the
+            # combined mora must also lengthen (e.g. "reader" R-IY-D-ER ->
+            # "リーダー", not "リダー").
+            if nxt in ("IY", "UW"):
+                result.append((CONSONANTS[ph][_VOWEL_KEYS[nxt]], stresses[i + 1]))
+                result.append(("ー", None))
+                i += 2
+                continue
             if (
                 ph == "R"
                 and result
@@ -168,6 +189,13 @@ def _morae_with_stress(phonemes):
                     result.append((m, stresses[i + 1] if j == len(morae) - 1 else None))
                 i += 2
                 continue
+            # a short vowel (not the long IY/UW, ER, or a diphthong -
+            # those are handled above and don't geminate the same way)
+            # directly followed by a word-final/pre-consonant voiceless
+            # stop is realized with a geminate (small tsu): "input" IH-N-
+            # P-UH-T -> ...プ + ッ + ト ("インプット"), not "...プト".
+            if ph in ("P", "T", "K", "CH") and i > 0 and bases[i - 1] in _VOWEL_KEYS:
+                result.append(("ッ", None))
             result.append((CONSONANTS[ph]["coda"], None))
             i += 1
             continue
