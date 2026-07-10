@@ -39,5 +39,16 @@
   {
     "surface": "camels",
     "reading": "カメルズ"
+  },
+  {
+    "note": "Consecutive N+AH+N regression: schwa-sonorant rule must not produce ンン."
+  },
+  {
+    "surface": "abstinence",
+    "reading": "アブスタナンス"
+  },
+  {
+    "surface": "maintenance",
+    "reading": "メインタナンス"
   }
 ]

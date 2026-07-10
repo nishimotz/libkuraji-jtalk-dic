@@ -211,6 +211,12 @@ def _morae_with_stress(phonemes):
             # mora and let the consonant surface on its own, instead of
             # combining consonant+schwa into a spurious extra mora
             # (avoids "open" -> オウパン, produces オウプン instead).
+            #
+            # Exception: when the current consonant and the following
+            # sonorant are the same (N+AH+N, M+AH+M), dropping the schwa
+            # produces consecutive ンン which is unnatural in Japanese
+            # (e.g. "cannon" -> カンン instead of カナン).  In that case
+            # let the normal consonant+vowel combination apply.
             if (
                 nxt == "AH"
                 and i + 1 < n
@@ -218,6 +224,7 @@ def _morae_with_stress(phonemes):
                 and i + 2 < n
                 and bases[i + 2] in ("N", "M", "L")
                 and (i + 3 == n or bases[i + 3] not in _VOWEL_KEYS)
+                and not (ph in ("N", "M") and bases[i + 2] == ph)
             ):
                 result.append((CONSONANTS[ph]["coda"], None))
                 i += 2  # skip this consonant and the schwa; sonorant handled next loop
