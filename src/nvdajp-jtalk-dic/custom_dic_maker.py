@@ -41,6 +41,13 @@ def _to_mecab_surface(s: str) -> str:
 jdic = [
 	# first item should use fullshape(zenkaku) charactors
 	["読み込み中", "ヨミコミチュー", "2/6"],
+	# English word overrides to fix ARPAbet-to-kana generation issues.
+	# Surfaces are written in plain ASCII and converted to full-width by
+	# _to_mecab_surface() so they match the text2mecab output used by JTalk.
+	["amazon", "アマゾン", "1/4"],
+	["Amazon", "アマゾン", "1/4"],
+	["com", "コム", "1/2"],
+	["directors", "ダイレクターズ", "1/6"],
 	# ['一行', 		'イチギョー',			"2/4"],
 	# ['１行', 		'イチギョー',			"2/4"],
 	# ['１行下', 	'イチギョーシタ',		"2/6"],

@@ -19,7 +19,7 @@ from pathlib import Path
 
 TESTS_DIR = Path(__file__).parent
 ROOT_DIR = TESTS_DIR.parent
-DIC_DIR = ROOT_DIR / "build" / "dic"
+DIC_DIR = ROOT_DIR / "src" / "nvdajp-jtalk-dic" / "build" / "dic"
 
 
 def _load_harness():

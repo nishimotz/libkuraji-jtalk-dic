@@ -27,6 +27,16 @@ SOURCE_FILE = "cmudict-subset.dict"
 COST = 3000
 POS = "名詞,一般,*,*,*,*"
 
+# Words excluded from the CMUdict-derived bulk dictionary.
+# These have established katakana spellings that the ARPAbet-to-kana rules
+# generate incorrectly (e.g. AA mapped to ア, ER+EH splitting).  They are
+# provided as hand-curated overrides in custom_dic_maker.py instead.
+EXCLUDED_WORDS = frozenset((
+    "amazon",
+    "com",
+    "directors",
+))
+
 
 def _load_source(source_path: Path):
     entries = []
@@ -46,6 +56,8 @@ def make_dic(CODE, THISDIR):
     entries = _load_source(source_path)
     with open(THISDIR / OUT_FILE, "w", encoding=CODE) as file:
         for word, phonemes in entries:
+            if word.lower() in EXCLUDED_WORDS:
+                continue
             k1 = _to_mecab_surface(word)
             braille = arpabet_to_kana(phonemes)
             speech = kana_speech_safe(braille)
