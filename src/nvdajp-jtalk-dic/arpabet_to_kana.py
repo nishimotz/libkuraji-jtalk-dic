@@ -136,6 +136,27 @@ def _morae_with_stress(phonemes):
                 result.append(("ズ", None))
                 i += 2
                 continue
+            # Velar nasal NG immediately followed by K is realized as "ンク"
+            # (not "ング" + "ク") when K begins a new syllable marker, e.g.
+            # "functions" -> ファンクションズ.  When K is followed by a vowel
+            # (ING endings), it forms the syllable onset instead: "thinking"
+            # /ˈθɪŋkɪŋ/ -> シンキング, "banking" /ˈbæŋkɪŋ/ -> バンキング.
+            if ph == "NG" and nxt == "K":
+                if i + 2 < n and bases[i + 2] in _VOWEL_KEYS:
+                    result.append(("ン", None))
+                    vowel = bases[i + 2]
+                    kana = CONSONANTS["K"][_VOWEL_KEYS[vowel]]
+                    morae = _split_morae(kana)
+                    for j, m in enumerate(morae):
+                        result.append((m, stresses[i + 2] if j == len(morae) - 1 else None))
+                    # K + IY/UW are long vowels; lengthen the combined mora.
+                    if vowel in ("IY", "UW"):
+                        result.append(("ー", None))
+                    i += 3
+                    continue
+                result.append(("ンク", None))
+                i += 2
+                continue
             # consonant + IY/UW: these are inherently long vowels (unlike
             # IH/UH, which share the same combining key "i"/"u"), so the
             # combined mora must also lengthen (e.g. "reader" R-IY-D-ER ->
@@ -162,6 +183,27 @@ def _morae_with_stress(phonemes):
                     result.append((m, None))
                 result.append((trailing, stresses[i + 1]))
                 i += 2
+                continue
+            # consonant + unstressed AH + L (schwa + dark L) maps to the
+            # consonant's e-row kana + "ル" for a few frequent sonorants,
+            # matching established loanword spellings:
+            #   cancel /ˈkænsəl/ -> キャンセル
+            #   camel  /ˈkæməl/  -> キャメル
+            #   channel /ˈtʃænəl/ -> チャンネル
+            # This must run before the generic syllabic-sonorant rule below.
+            if (
+                nxt == "AH"
+                and i + 1 < n
+                and stresses[i + 1] == "0"
+                and i + 2 < n
+                and bases[i + 2] == "L"
+                and ph in ("S", "M", "N")
+                and (i + 3 == n or bases[i + 3] not in _VOWEL_KEYS)
+            ):
+                e_row = {"S": "セ", "M": "メ", "N": "ネ"}[ph]
+                result.append((e_row, None))
+                result.append(("ル", None))
+                i += 3
                 continue
             # unstressed schwa immediately before a word-final (or
             # pre-consonant) sonorant is realized in English as a

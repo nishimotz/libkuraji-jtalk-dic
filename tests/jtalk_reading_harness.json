@@ -24,5 +24,20 @@
   {
     "surface": "fairer",
     "reading": "フェー"
+  },
+  {
+    "note": "Velar nasal + K and schwa + L regressions."
+  },
+  {
+    "surface": "functions",
+    "reading": "ファンクシュンズ"
+  },
+  {
+    "surface": "cancelled",
+    "reading": "カンセルド"
+  },
+  {
+    "surface": "camels",
+    "reading": "カメルズ"
   }
 ]
