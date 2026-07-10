@@ -99,6 +99,25 @@ def _morae_with_stress(phonemes):
     n = len(bases)
     while i < n:
         ph = bases[i]
+        # ER + IY0 after a vowel-ending mora: "アリー" contraction.
+        # This must be checked BEFORE the vowel-lengthening ER rule below,
+        # so that diary (AY1-ER0-IY0) -> "ダイ" + "アリー" instead of
+        # "ダイーイー".  When ER is followed by IY0 (both unstressed, or
+        # ER stressed + IY0 unstressed), the two vowels collapse to
+        # "アリー" (matching ダイアリー, ファイアリー, バウアリー).
+        # Also handles ER1+IY0 after vowel: hurry (HH-ER1-IY0) -> "ハ" + "リー".
+        if (
+            ph == "ER"
+            and i + 1 < n
+            and bases[i + 1] == "IY"
+            and stresses[i + 1] == "0"
+            and result
+            and result[-1][0][-1] in "アイウエオ"
+        ):
+            result.append(("ア", None))
+            result.append(("リー", stresses[i + 1]))
+            i += 2
+            continue
         if ph == "ER" and result and result[-1][0][-1] in "アイウエオー":
             # rhotic schwa directly after a vowel-ending mora (no
             # intervening consonant) is a lengthening, not a new
@@ -109,6 +128,11 @@ def _morae_with_stress(phonemes):
             continue
         if ph in VOWELS:
             kana = VOWELS[ph]
+            # Unstressed rhotic schwa (ER0) at word start is realized as
+            # "ア" (one mora), not "アー" (two morae), matching established
+            # loanword spellings: arena -> アリーナ, arise -> アライズ.
+            if ph == "ER" and stresses[i] == "0" and not result:
+                kana = "ア"
             morae = _split_morae(kana)
             for j, m in enumerate(morae):
                 result.append((m, stresses[i] if j == 0 else None))
@@ -116,6 +140,41 @@ def _morae_with_stress(phonemes):
             continue
         if ph in CONSONANTS:
             nxt = bases[i + 1] if i + 1 < n else None
+            # ER + IY0 contraction: when a rhotic schwa (stressed or
+            # unstressed) is immediately followed by an unstressed /i/
+            # (IY0), the two vowels collapse to a single "リー" mora,
+            # matching established loanword spellings:
+            #   gallery  /ˈɡæləri/  L-ER0-IY0 -> "ル" + "リー" (ガラリー)
+            #   hurry    /ˈhʌri/    H-ER1-IY0 -> "ハ" + "リー" (ハリー)
+            #   luxury   /ˈlʌkʃəri/ ZH-ER0-IY0 -> "ジュ" + "リー" (ラグジャリー)
+            #   priory   /ˈpraɪəri/ R-AY1-ER0-IY0 -> R coda, "アリー" (プライアリー)
+            # This must run BEFORE the generic consonant+ER rule, so that
+            # C-ER-IY0 does not get consumed by C-ER -> "Cー" leaving IY0
+            # as a bare "イー".
+            if (
+                nxt == "ER"
+                and ph != "R"
+                and i + 2 < n
+                and bases[i + 2] == "IY"
+                and stresses[i + 2] == "0"
+            ):
+                # If the previous mora ends in a vowel, this consonant is
+                # the onset of the ER syllable -> combine C+ER, then "リー".
+                # If the previous mora is a consonant coda (or no previous
+                # mora) AND ER is unstressed (ER0), the consonant is a
+                # coda and ER0+IY0 -> "リー".
+                # But if ER is STRESSED (ER1), the consonant is always the
+                # onset -> combine C+ER regardless (hurry HH-ER1-IY0 -> "ハリー").
+                if (result and result[-1][0] and result[-1][0][-1] in "アイウエオ") or stresses[i + 1] != "0":
+                    # consonant is onset of ER syllable
+                    result.append((CONSONANTS[ph]["a"], stresses[i + 1]))
+                    result.append(("リー", stresses[i + 2]))
+                else:
+                    # consonant coda + ER0 + IY0 -> "リー"
+                    result.append((CONSONANTS[ph]["coda"], None))
+                    result.append(("リー", stresses[i + 2]))
+                i += 3
+                continue
             # consonant + ER ("er/ar" rhotic vowel): combine as
             # consonant+a, then lengthen (e.g. "current" K-ER -> "カー",
             # not "ク" + bare "アー").
@@ -134,6 +193,78 @@ def _morae_with_stress(phonemes):
                 continue
             if ph == "D" and nxt == "Z":
                 result.append(("ズ", None))
+                i += 2
+                continue
+            # Velar nasal NG immediately followed by K is realized as "ンク"
+            # (not "ング" + "ク") when K begins a new syllable marker, e.g.
+            # "functions" -> ファンクションズ.  When K is followed by a vowel
+            # (ING endings), it forms the syllable onset instead: "thinking"
+            # /ˈθɪŋkɪŋ/ -> シンキング, "banking" /ˈbæŋkɪŋ/ -> バンキング.
+            if ph == "NG" and nxt == "K":
+                if i + 2 < n and bases[i + 2] in _VOWEL_KEYS:
+                    result.append(("ン", None))
+                    vowel = bases[i + 2]
+                    kana = CONSONANTS["K"][_VOWEL_KEYS[vowel]]
+                    morae = _split_morae(kana)
+                    for j, m in enumerate(morae):
+                        result.append((m, stresses[i + 2] if j == len(morae) - 1 else None))
+                    # K + IY/UW are long vowels; lengthen the combined mora.
+                    if vowel in ("IY", "UW"):
+                        result.append(("ー", None))
+                    i += 3
+                    continue
+                result.append(("ンク", None))
+                i += 2
+                continue
+            # N/M + Y + UW/IY: palatalized consonant cluster (/nj/ -> ニュ,
+            # /mj/ -> ミュ).  In English, N-Y-UW forms a /nj/ sound (as in
+            # "monument" /ˈmɑnjumənt/, "new" /njuː/) which maps to ニュ in
+            # Japanese loanwords, not "ン" + "ユー".  Similarly M-Y-UW
+            # (as in "communicate" /kəˈmjuːnɪkeɪt/) maps to ミュ.
+            # This must run BEFORE the consonant+IY/UW rule below.
+            if (
+                ph in ("N", "M")
+                and nxt == "Y"
+                and i + 2 < n
+                and bases[i + 2] in ("UW", "IY")
+            ):
+                # Combine as palatal: N+Y+UW -> "ニュ"(+"ー" if UW/IY),
+                # M+Y+UW -> "ミュ"(+"ー" if UW/IY)
+                pal = {"N": "ニュ", "M": "ミュ"}[ph]
+                result.append((pal, stresses[i + 2]))
+                if bases[i + 2] in ("UW", "IY"):
+                    result.append(("ー", None))
+                i += 3
+                continue
+            # N/M + UW/IY (without explicit Y): in some CMUdict entries,
+            # the /j/ is implicit (e.g. "new" = N UW1, not N Y UW1).
+            # Map to ニュー/ニー or ミュー/ミー to match established
+            # loanword spellings (new -> ニュー, music -> ミュージック).
+            if (
+                ph in ("N", "M")
+                and nxt in ("UW", "IY")
+                and not result
+            ):
+                pal = {"N": {"UW": "ニュー", "IY": "ニー"},
+                        "M": {"UW": "ミュー", "IY": "ミー"}}[ph][nxt]
+                result.append((pal, stresses[i + 1]))
+                i += 2
+                continue
+            # R + AH0 + L/D: preserve the R as a ラ行 kana instead of
+            # letting the schwa-sonorant rule swallow it (e.g. "herald"
+            # HH-EH1-R-AH0-L-D -> "ヘラルド", not "ヘルド").  The R here
+            # is an onset consonant, not a coda; the schwa between R and
+            # the following sonorant is just the vowel of R's syllable.
+            if (
+                ph == "R"
+                and nxt == "AH"
+                and i + 1 < n
+                and stresses[i + 1] == "0"
+                and i + 2 < n
+                and bases[i + 2] in ("L", "D", "N")
+            ):
+                result.append((CONSONANTS["R"]["a"], None))
+                # Skip the schwa; the following consonant is handled next loop
                 i += 2
                 continue
             # consonant + IY/UW: these are inherently long vowels (unlike
@@ -163,12 +294,61 @@ def _morae_with_stress(phonemes):
                 result.append((trailing, stresses[i + 1]))
                 i += 2
                 continue
+            # AH0 + M + Y + UW: when schwa-M is followed by Y+UW (as in
+            # "communicate" K-AH0-M-Y-UW1-...), the M is the onset of the
+            # /mjuː/ syllable, not a coda.  Combine as "ミュ"+"ー" instead
+            # of "ム" + "ユー".  This must run BEFORE the schwa-sonorant
+            # rule and the consonant+IY/UW rule.
+            if (
+                nxt == "AH"
+                and i + 1 < n
+                and stresses[i + 1] == "0"
+                and i + 2 < n
+                and bases[i + 2] == "M"
+                and i + 3 < n
+                and bases[i + 3] == "Y"
+                and i + 4 < n
+                and bases[i + 4] in ("UW", "IY")
+            ):
+                result.append((CONSONANTS[ph]["coda"], None))
+                result.append(("ミュ", stresses[i + 4]))
+                if bases[i + 4] in ("UW", "IY"):
+                    result.append(("ー", None))
+                i += 5
+                continue
+            # consonant + unstressed AH + L (schwa + dark L) maps to the
+            # consonant's e-row kana + "ル" for a few frequent sonorants,
+            # matching established loanword spellings:
+            #   cancel /ˈkænsəl/ -> キャンセル
+            #   camel  /ˈkæməl/  -> キャメル
+            #   channel /ˈtʃænəl/ -> チャンネル
+            # This must run before the generic syllabic-sonorant rule below.
+            if (
+                nxt == "AH"
+                and i + 1 < n
+                and stresses[i + 1] == "0"
+                and i + 2 < n
+                and bases[i + 2] == "L"
+                and ph in ("S", "M", "N")
+                and (i + 3 == n or bases[i + 3] not in _VOWEL_KEYS)
+            ):
+                e_row = {"S": "セ", "M": "メ", "N": "ネ"}[ph]
+                result.append((e_row, None))
+                result.append(("ル", None))
+                i += 3
+                continue
             # unstressed schwa immediately before a word-final (or
             # pre-consonant) sonorant is realized in English as a
             # syllabic consonant (e.g. "open" /oʊpn̩/): drop the schwa
             # mora and let the consonant surface on its own, instead of
             # combining consonant+schwa into a spurious extra mora
             # (avoids "open" -> オウパン, produces オウプン instead).
+            #
+            # Exception: when the current consonant and the following
+            # sonorant are the same (N+AH+N, M+AH+M), dropping the schwa
+            # produces consecutive ンン which is unnatural in Japanese
+            # (e.g. "cannon" -> カンン instead of カナン).  In that case
+            # let the normal consonant+vowel combination apply.
             if (
                 nxt == "AH"
                 and i + 1 < n
@@ -176,6 +356,7 @@ def _morae_with_stress(phonemes):
                 and i + 2 < n
                 and bases[i + 2] in ("N", "M", "L")
                 and (i + 3 == n or bases[i + 3] not in _VOWEL_KEYS)
+                and not (ph in ("N", "M") and bases[i + 2] == ph)
             ):
                 result.append((CONSONANTS[ph]["coda"], None))
                 i += 2  # skip this consonant and the schwa; sonorant handled next loop
@@ -212,7 +393,14 @@ def arpabet_to_kana(phonemes):
     non-rhotic vowel-R sequences beyond the simple "coda R lengthens
     the previous vowel" rule.
     """
-    return "".join(m for m, _ in _morae_with_stress(phonemes))
+    raw = "".join(m for m, _ in _morae_with_stress(phonemes))
+    # Collapse consecutive long-vowel morae into one.  The ARPAbet rules
+    # can produce sequences like "フェーー" for "fairer" (EH + coda R + ER)
+    # because both the coda R and the following rhotic schwa add a "ー".
+    # Japanese loanwords never write two long-vowel marks in a row.
+    while "ーー" in raw:
+        raw = raw.replace("ーー", "ー")
+    return raw
 
 
 # nvdajp's existing custom dic entries (e.g. custom_dic_maker.py's

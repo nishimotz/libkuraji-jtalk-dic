@@ -1,6 +1,7 @@
 build/
 output/
 __pycache__/
+review/
 src/nvdajp-jtalk-dic/naist-jdic-source/_temp/
 src/mecab-src/src/*.obj
 src/mecab-src/src/*.lib
