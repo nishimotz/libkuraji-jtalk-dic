@@ -1,0 +1,17 @@
+[
+  {
+    "note": "Regression tests for English word katakana readings in nvdajp-eng-dic. These are final-output-style expectations (katakana) after MeCab analysis. They do NOT guarantee NVDA/JTalk final speech output, because libkuraji and NVDA apply further post-processing (mecab_correct.py, symbol handling, capitalization, etc.). They only guarantee that the dictionary itself returns the listed reading for the surface form."
+  },
+  {
+    "surface": "Amazon",
+    "reading": "アマゾン"
+  },
+  {
+    "surface": "com",
+    "reading": "コム"
+  },
+  {
+    "surface": "directors",
+    "reading": "ダイレクターズ"
+  }
+]
