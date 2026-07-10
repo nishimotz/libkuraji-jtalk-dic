@@ -250,6 +250,49 @@ def _morae_with_stress(phonemes):
                 result.append((pal, stresses[i + 1]))
                 i += 2
                 continue
+            # Consonant + Y + UW/IY/UH: palatalized consonant cluster.
+            # F+Y+UW -> "フュー" (fume, future, fusion, confuse),
+            # B+Y+UW -> "ビュー" (beauty), V+Y+UW -> "ヴュー" (view),
+            # P+Y+UH -> "ピュア" (pure), HH+Y+UW -> "ヒュー" (human),
+            # K+Y+UH -> "キュア" (cure), G+Y+UW -> "ギュー" (argue),
+            # T+Y+UW -> "チュー" (tune), D+Y+UW -> "ジュー" (duty).
+            # This must run BEFORE the consonant+IY/UW rule below.
+            if (
+                ph == "F"
+                and nxt == "Y"
+                and i + 2 < n
+                and bases[i + 2] in ("UW", "IY", "UH")
+            ):
+                result.append(("フュ", stresses[i + 2]))
+                if bases[i + 2] in ("UW", "IY"):
+                    result.append(("ー", None))
+                i += 3
+                continue
+            if (
+                ph in ("P", "B", "V", "HH", "K", "G")
+                and nxt == "Y"
+                and i + 2 < n
+                and bases[i + 2] in ("UW", "IY", "UH")
+            ):
+                pal = CONSONANTS[ph]["i"] + "ュ"
+                result.append((pal, stresses[i + 2]))
+                if bases[i + 2] in ("UW", "IY"):
+                    result.append(("ー", None))
+                i += 3
+                continue
+            if (
+                ph in ("T", "D")
+                and nxt == "Y"
+                and i + 2 < n
+                and bases[i + 2] in ("UW", "IY", "UH")
+            ):
+                cons = "CH" if ph == "T" else "JH"
+                vkey = {"UW": "u", "IY": "i", "UH": "u"}[bases[i + 2]]
+                result.append((CONSONANTS[cons][vkey], stresses[i + 2]))
+                if bases[i + 2] in ("UW", "IY"):
+                    result.append(("ー", None))
+                i += 3
+                continue
             # R + AH0 + L/D: preserve the R as a ラ行 kana instead of
             # letting the schwa-sonorant rule swallow it (e.g. "herald"
             # HH-EH1-R-AH0-L-D -> "ヘラルド", not "ヘルド").  The R here
