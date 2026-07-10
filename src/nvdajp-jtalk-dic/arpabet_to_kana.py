@@ -212,7 +212,14 @@ def arpabet_to_kana(phonemes):
     non-rhotic vowel-R sequences beyond the simple "coda R lengthens
     the previous vowel" rule.
     """
-    return "".join(m for m, _ in _morae_with_stress(phonemes))
+    raw = "".join(m for m, _ in _morae_with_stress(phonemes))
+    # Collapse consecutive long-vowel morae into one.  The ARPAbet rules
+    # can produce sequences like "フェーー" for "fairer" (EH + coda R + ER)
+    # because both the coda R and the following rhotic schwa add a "ー".
+    # Japanese loanwords never write two long-vowel marks in a row.
+    while "ーー" in raw:
+        raw = raw.replace("ーー", "ー")
+    return raw
 
 
 # nvdajp's existing custom dic entries (e.g. custom_dic_maker.py's

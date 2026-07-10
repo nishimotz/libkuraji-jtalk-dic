@@ -17,5 +17,12 @@
   {
     "surface": "directors",
     "reading": "ダイレクターズ"
+  },
+  {
+    "note": "Long-vowel rule regression: arpabet_to_kana.py must collapse consecutive chouon marks instead of producing フェーー."
+  },
+  {
+    "surface": "fairer",
+    "reading": "フェー"
   }
 ]
