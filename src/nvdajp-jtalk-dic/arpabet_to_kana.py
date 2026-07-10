@@ -216,6 +216,57 @@ def _morae_with_stress(phonemes):
                 result.append(("ンク", None))
                 i += 2
                 continue
+            # N/M + Y + UW/IY: palatalized consonant cluster (/nj/ -> ニュ,
+            # /mj/ -> ミュ).  In English, N-Y-UW forms a /nj/ sound (as in
+            # "monument" /ˈmɑnjumənt/, "new" /njuː/) which maps to ニュ in
+            # Japanese loanwords, not "ン" + "ユー".  Similarly M-Y-UW
+            # (as in "communicate" /kəˈmjuːnɪkeɪt/) maps to ミュ.
+            # This must run BEFORE the consonant+IY/UW rule below.
+            if (
+                ph in ("N", "M")
+                and nxt == "Y"
+                and i + 2 < n
+                and bases[i + 2] in ("UW", "IY")
+            ):
+                # Combine as palatal: N+Y+UW -> "ニュ"(+"ー" if UW/IY),
+                # M+Y+UW -> "ミュ"(+"ー" if UW/IY)
+                pal = {"N": "ニュ", "M": "ミュ"}[ph]
+                result.append((pal, stresses[i + 2]))
+                if bases[i + 2] in ("UW", "IY"):
+                    result.append(("ー", None))
+                i += 3
+                continue
+            # N/M + UW/IY (without explicit Y): in some CMUdict entries,
+            # the /j/ is implicit (e.g. "new" = N UW1, not N Y UW1).
+            # Map to ニュー/ニー or ミュー/ミー to match established
+            # loanword spellings (new -> ニュー, music -> ミュージック).
+            if (
+                ph in ("N", "M")
+                and nxt in ("UW", "IY")
+                and not result
+            ):
+                pal = {"N": {"UW": "ニュー", "IY": "ニー"},
+                        "M": {"UW": "ミュー", "IY": "ミー"}}[ph][nxt]
+                result.append((pal, stresses[i + 1]))
+                i += 2
+                continue
+            # R + AH0 + L/D: preserve the R as a ラ行 kana instead of
+            # letting the schwa-sonorant rule swallow it (e.g. "herald"
+            # HH-EH1-R-AH0-L-D -> "ヘラルド", not "ヘルド").  The R here
+            # is an onset consonant, not a coda; the schwa between R and
+            # the following sonorant is just the vowel of R's syllable.
+            if (
+                ph == "R"
+                and nxt == "AH"
+                and i + 1 < n
+                and stresses[i + 1] == "0"
+                and i + 2 < n
+                and bases[i + 2] in ("L", "D", "N")
+            ):
+                result.append((CONSONANTS["R"]["a"], None))
+                # Skip the schwa; the following consonant is handled next loop
+                i += 2
+                continue
             # consonant + IY/UW: these are inherently long vowels (unlike
             # IH/UH, which share the same combining key "i"/"u"), so the
             # combined mora must also lengthen (e.g. "reader" R-IY-D-ER ->
@@ -242,6 +293,28 @@ def _morae_with_stress(phonemes):
                     result.append((m, None))
                 result.append((trailing, stresses[i + 1]))
                 i += 2
+                continue
+            # AH0 + M + Y + UW: when schwa-M is followed by Y+UW (as in
+            # "communicate" K-AH0-M-Y-UW1-...), the M is the onset of the
+            # /mjuː/ syllable, not a coda.  Combine as "ミュ"+"ー" instead
+            # of "ム" + "ユー".  This must run BEFORE the schwa-sonorant
+            # rule and the consonant+IY/UW rule.
+            if (
+                nxt == "AH"
+                and i + 1 < n
+                and stresses[i + 1] == "0"
+                and i + 2 < n
+                and bases[i + 2] == "M"
+                and i + 3 < n
+                and bases[i + 3] == "Y"
+                and i + 4 < n
+                and bases[i + 4] in ("UW", "IY")
+            ):
+                result.append((CONSONANTS[ph]["coda"], None))
+                result.append(("ミュ", stresses[i + 4]))
+                if bases[i + 4] in ("UW", "IY"):
+                    result.append(("ー", None))
+                i += 5
                 continue
             # consonant + unstressed AH + L (schwa + dark L) maps to the
             # consonant's e-row kana + "ル" for a few frequent sonorants,

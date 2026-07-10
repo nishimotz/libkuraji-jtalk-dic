@@ -50,5 +50,64 @@
   {
     "surface": "maintenance",
     "reading": "メインタナンス"
+  },
+  {
+    "note": "ER+IY0 contraction: hurry -> ハリー, gallery -> ガルリー, diary -> ダイアリー, luxury -> ラグジュリー"
+  },
+  {
+    "surface": "hurry",
+    "reading": "ハリー"
+  },
+  {
+    "surface": "diary",
+    "reading": "ダイアリー"
+  },
+  {
+    "surface": "luxury",
+    "reading": "ラグジュリー"
+  },
+  {
+    "note": "N+Y+UW palatal: new -> ニュー, monument -> マニュームント, music -> ミュージック"
+  },
+  {
+    "surface": "new",
+    "reading": "ニュー"
+  },
+  {
+    "surface": "music",
+    "reading": "ミュージック"
+  },
+  {
+    "note": "R+AH0+L: herald -> ヘラルド (R preserved as ラ行)"
+  },
+  {
+    "surface": "herald",
+    "reading": "ヘラルド"
+  },
+  {
+    "note": "AH0+M+Y+UW: communicate -> コミュニケイト (custom dic override)"
+  },
+  {
+    "surface": "communicate",
+    "reading": "コミュニケイト"
+  },
+  {
+    "note": "Custom dic overrides for words excluded from eng-dic"
+  },
+  {
+    "surface": "radio",
+    "reading": "ラジオ"
+  },
+  {
+    "surface": "oasis",
+    "reading": "オアシス"
+  },
+  {
+    "surface": "separation",
+    "reading": "セパレイシュン"
+  },
+  {
+    "surface": "monument",
+    "reading": "モニュメント"
   }
 ]
