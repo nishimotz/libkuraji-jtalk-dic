@@ -34,6 +34,7 @@ POS = "名詞,一般,*,*,*,*"
 EXCLUDED_WORDS = frozenset((
     "amazon",
     "com",
+    "director",
     "directors",
 ))
 
