@@ -109,6 +109,11 @@ def _morae_with_stress(phonemes):
             continue
         if ph in VOWELS:
             kana = VOWELS[ph]
+            # Unstressed rhotic schwa (ER0) at word start is realized as
+            # "ア" (one mora), not "アー" (two morae), matching established
+            # loanword spellings: arena -> アリーナ, arise -> アライズ.
+            if ph == "ER" and stresses[i] == "0" and not result:
+                kana = "ア"
             morae = _split_morae(kana)
             for j, m in enumerate(morae):
                 result.append((m, stresses[i] if j == 0 else None))
