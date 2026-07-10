@@ -28,14 +28,81 @@ COST = 3000
 POS = "名詞,一般,*,*,*,*"
 
 # Words excluded from the CMUdict-derived bulk dictionary.
-# These have established katakana spellings that the ARPAbet-to-kana rules
-# generate incorrectly (e.g. AA mapped to ア, ER+EH splitting).  They are
-# provided as hand-curated overrides in custom_dic_maker.py instead.
+# These fall into two groups:
+# 1. Words with established katakana spellings that the ARPAbet-to-kana
+#    rules generate incorrectly.  Provided as hand-curated overrides in
+#    custom_dic_maker.py instead.
+# 2. Japanese-origin proper names and short acronyms/initialisms whose
+#    conventional reading is simply the romaji reading (e.g. "matsui" ->
+#    マツイ, "ceo" -> C.E.O. = シーイーオー).  The ARPAbet pronunciation
+#    produces unnatural vowel-heavy katakana for these, so excluding them
+#    lets MeCab's unknown-word handler produce the romaji reading instead.
 EXCLUDED_WORDS = frozenset((
+    # Established katakana overrides (custom_dic_maker.py)
     "amazon",
     "com",
     "director",
     "directors",
+    # Japanese-origin proper names: romaji reading is correct
+    "matsui",
+    "tetsuo",
+    "tsui",
+    "oishi",
+    "aoki",
+    "aoi",
+    "aida",
+    # Acronyms/initialisms: spell out each letter
+    "ceo",
+    "cia",
+    "aol",
+    "iou",
+    "sos",
+    "baa",
+    # Short proper names better read as romaji
+    "iona",
+    "iota",
+    "iain",
+    "yeo",
+    # Foreign-origin proper names where romaji reading is closer
+    "galleria",
+    "fabrizio",
+    "koreatown",
+    "darius",
+    "mariah",
+    "zachariah",
+    "ios",
+    "pariah",
+    "gonorrhea",
+    "diarrhea",
+    "diarrhoea",
+    "aorta",
+    "aortic",
+    "arroyo",
+    "psoriasis",
+    "oasis",
+    "notoriety",
+    "radio",
+    "radioactive",
+    "radioactivity",
+    # Custom dic overrides for complex ER/vowel patterns
+    "variety",
+    "varieties",
+    "various",
+    "parietal",
+    "pizzeria",
+    "maria",
+    "firearm",
+    "firearms",
+    "hierarchy",
+    "burrowing",
+    "arroyo",
+    "electromagnetism",
+    "extraterrestrial",
+    "extraterrestrials",
+    "indistinguishable",
+    "institutionalized",
+    "triangulation",
+    "unsubstantiated",
 ))
 
 

@@ -99,6 +99,25 @@ def _morae_with_stress(phonemes):
     n = len(bases)
     while i < n:
         ph = bases[i]
+        # ER + IY0 after a vowel-ending mora: "アリー" contraction.
+        # This must be checked BEFORE the vowel-lengthening ER rule below,
+        # so that diary (AY1-ER0-IY0) -> "ダイ" + "アリー" instead of
+        # "ダイーイー".  When ER is followed by IY0 (both unstressed, or
+        # ER stressed + IY0 unstressed), the two vowels collapse to
+        # "アリー" (matching ダイアリー, ファイアリー, バウアリー).
+        # Also handles ER1+IY0 after vowel: hurry (HH-ER1-IY0) -> "ハ" + "リー".
+        if (
+            ph == "ER"
+            and i + 1 < n
+            and bases[i + 1] == "IY"
+            and stresses[i + 1] == "0"
+            and result
+            and result[-1][0][-1] in "アイウエオ"
+        ):
+            result.append(("ア", None))
+            result.append(("リー", stresses[i + 1]))
+            i += 2
+            continue
         if ph == "ER" and result and result[-1][0][-1] in "アイウエオー":
             # rhotic schwa directly after a vowel-ending mora (no
             # intervening consonant) is a lengthening, not a new
@@ -121,6 +140,41 @@ def _morae_with_stress(phonemes):
             continue
         if ph in CONSONANTS:
             nxt = bases[i + 1] if i + 1 < n else None
+            # ER + IY0 contraction: when a rhotic schwa (stressed or
+            # unstressed) is immediately followed by an unstressed /i/
+            # (IY0), the two vowels collapse to a single "リー" mora,
+            # matching established loanword spellings:
+            #   gallery  /ˈɡæləri/  L-ER0-IY0 -> "ル" + "リー" (ガラリー)
+            #   hurry    /ˈhʌri/    H-ER1-IY0 -> "ハ" + "リー" (ハリー)
+            #   luxury   /ˈlʌkʃəri/ ZH-ER0-IY0 -> "ジュ" + "リー" (ラグジャリー)
+            #   priory   /ˈpraɪəri/ R-AY1-ER0-IY0 -> R coda, "アリー" (プライアリー)
+            # This must run BEFORE the generic consonant+ER rule, so that
+            # C-ER-IY0 does not get consumed by C-ER -> "Cー" leaving IY0
+            # as a bare "イー".
+            if (
+                nxt == "ER"
+                and ph != "R"
+                and i + 2 < n
+                and bases[i + 2] == "IY"
+                and stresses[i + 2] == "0"
+            ):
+                # If the previous mora ends in a vowel, this consonant is
+                # the onset of the ER syllable -> combine C+ER, then "リー".
+                # If the previous mora is a consonant coda (or no previous
+                # mora) AND ER is unstressed (ER0), the consonant is a
+                # coda and ER0+IY0 -> "リー".
+                # But if ER is STRESSED (ER1), the consonant is always the
+                # onset -> combine C+ER regardless (hurry HH-ER1-IY0 -> "ハリー").
+                if (result and result[-1][0] and result[-1][0][-1] in "アイウエオ") or stresses[i + 1] != "0":
+                    # consonant is onset of ER syllable
+                    result.append((CONSONANTS[ph]["a"], stresses[i + 1]))
+                    result.append(("リー", stresses[i + 2]))
+                else:
+                    # consonant coda + ER0 + IY0 -> "リー"
+                    result.append((CONSONANTS[ph]["coda"], None))
+                    result.append(("リー", stresses[i + 2]))
+                i += 3
+                continue
             # consonant + ER ("er/ar" rhotic vowel): combine as
             # consonant+a, then lengthen (e.g. "current" K-ER -> "カー",
             # not "ク" + bare "アー").

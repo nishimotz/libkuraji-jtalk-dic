@@ -65,7 +65,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Sample eng-dic entries whose reading is absent from NAIST-JDIC"
     )
-    parser.add_argument("-n", "--count", type=int, default=200, help="number of samples (default: 200)")
+    parser.add_argument("-n", "--count", type=int, default=500, help="number of samples (default: 500)")
     parser.add_argument("-s", "--seed", type=int, default=42, help="random seed (default: 42)")
     parser.add_argument("-o", "--output", type=Path, default=None, help="output TSV path (default: stdout)")
     args = parser.parse_args()

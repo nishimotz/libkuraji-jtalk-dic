@@ -50,6 +50,20 @@ def load_entries(path: Path):
     return entries
 
 
+def load_sample_tsv(path: Path):
+    """Load surface,reading,accent rows from a sample TSV."""
+    entries = []
+    with path.open("r", encoding="utf-8") as f:
+        reader = csv.reader(f, delimiter="\t")
+        for row in reader:
+            if len(row) < 3 or row[0] == "surface":
+                continue
+            surface, reading, accent = row[0], row[1], row[2]
+            if _is_fullwidth_ascii(surface) and _is_katakana(reading):
+                entries.append((surface, reading, accent))
+    return entries
+
+
 def _mora_split(reading: str) -> list[str]:
     """Split katakana into morae (small kana attached to preceding)."""
     small = set("ャュョァィゥェォッー")
@@ -132,14 +146,19 @@ def main() -> int:
     import argparse
 
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("-i", "--input", type=Path, default=ENG_DIC, help="input CSV/TSV path (default: full eng-dic)")
     parser.add_argument("-o", "--output", type=Path, default=None, help="output TSV path (default: stdout)")
+    parser.add_argument("--sample-tsv", action="store_true", help="input is a sample TSV with surface,reading,accent columns")
     args = parser.parse_args()
 
-    if not ENG_DIC.exists():
+    if args.input == ENG_DIC and not ENG_DIC.exists():
         print(f"eng-dic not found: {ENG_DIC}", file=sys.stderr)
         return 1
 
-    entries = load_entries(ENG_DIC)
+    if args.sample_tsv:
+        entries = load_sample_tsv(args.input)
+    else:
+        entries = load_entries(args.input)
     hits, counts = flag_entries(entries)
 
     print(f"Scanned {len(entries)} ASCII-surface eng-dic entries.", file=sys.stderr)

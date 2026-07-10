@@ -49,6 +49,35 @@ jdic = [
 	["com", "コム", "1/2"],
 	["director", "ダイレクター", "1/5"],
 	["directors", "ダイレクターズ", "1/6"],
+	# ER0+AY1 pattern: V-ER0-AY1-AH0 -> "アライ" (variety, parietal)
+	["variety", "バライアティー", "3/7"],
+	["varieties", "バライアティーズ", "3/8"],
+	["various", "バリアス", "1/5"],
+	["parietal", "パライエタル", "3/7"],
+	# ER0+IY1 pattern: P-ER0-IY1-AH0 -> "ピッツェリア" (pizzeria, maria)
+	["pizzeria", "ピッツェリア", "3/6"],
+	["maria", "マリア", "1/3"],
+	# ER0+AA2+R pattern: F-AY1-ER0-AA2-R-M -> "ファイア" + "ーム"
+	["firearm", "ファイアアーム", "2/7"],
+	["firearms", "ファイアアームズ", "2/8"],
+	["hierarchy", "ハイアラーキー", "3/7"],
+	# ER1+OW0 pattern: B-ER1-OW0 -> "バロウ" (burrow, burrowing)
+	["burrowing", "バロウイング", "1/7"],
+	# radio + compound words
+	["radioactive", "レイディオアクティブ", "5/10"],
+	["radioactivity", "レイディオアクティビティー", "5/13"],
+	# ER0+IY1 pattern: G-AE2-L-ER0-IY1-AH0 -> "ガレリア"
+	["galleria", "ガレリア", "2/5"],
+	# OY+OW pattern: A-R-IY0-OW1 -> "アオイオウ"? -> romaji reading
+	["arroyo", "アロヨ", "1/3"],
+	# D1 long words with established spellings
+	["electromagnetism", "イレクトロマグネティズム", "5/12"],
+	["extraterrestrial", "エクストラテレストリアル", "5/12"],
+	["extraterrestrials", "エクストラテレストリアルズ", "5/13"],
+	["indistinguishable", "インディスティンギッシュァブル", "5/12"],
+	["institutionalized", "インスティチューショナライズド", "5/13"],
+	["triangulation", "トライアンギュレーション", "5/11"],
+	["unsubstantiated", "アンサブスタンシエイティド", "5/12"],
 	# ['一行', 		'イチギョー',			"2/4"],
 	# ['１行', 		'イチギョー',			"2/4"],
 	# ['１行下', 	'イチギョーシタ',		"2/6"],
