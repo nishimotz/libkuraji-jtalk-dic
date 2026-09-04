@@ -160,5 +160,80 @@
   {
     "surface": "at",
     "reading": "アット"
+  },
+  {
+    "note": "Regression cases for Japanese loanwords in English (jujitsu, karate, sushi, etc.)"
+  },
+  {
+    "surface": "jujitsu",
+    "reading": "ジュウジュツ"
+  },
+  {
+    "surface": "jiujitsu",
+    "reading": "ジュウジュツ"
+  },
+  {
+    "surface": "judo",
+    "reading": "ジュウドウ"
+  },
+  {
+    "surface": "karate",
+    "reading": "カラテ"
+  },
+  {
+    "surface": "karaoke",
+    "reading": "カラオケ"
+  },
+  {
+    "surface": "sushi",
+    "reading": "スシ"
+  },
+  {
+    "surface": "tofu",
+    "reading": "トーフ"
+  },
+  {
+    "surface": "tsunami",
+    "reading": "ツナミ"
+  },
+  {
+    "surface": "anime",
+    "reading": "アニメ"
+  },
+  {
+    "surface": "manga",
+    "reading": "マンガ"
+  },
+  {
+    "surface": "sake",
+    "reading": "サケ"
+  },
+  {
+    "surface": "kimono",
+    "reading": "キモノ"
+  },
+  {
+    "surface": "sukiyaki",
+    "reading": "スキヤキ"
+  },
+  {
+    "surface": "teriyaki",
+    "reading": "テリヤキ"
+  },
+  {
+    "surface": "toyota",
+    "reading": "トヨタ"
+  },
+  {
+    "surface": "honda",
+    "reading": "ホンダ"
+  },
+  {
+    "surface": "nissan",
+    "reading": "ニッサン"
+  },
+  {
+    "surface": "mitsubishi",
+    "reading": "ミツビシ"
   }
 ]
