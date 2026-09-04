@@ -235,5 +235,60 @@
   {
     "surface": "mitsubishi",
     "reading": "ミツビシ"
+  },
+  {
+    "note": "Regression cases for loanword readings and Japanese proper names (pizza, pantsuit, patsy, matsumura, mitsuru, etc.)"
+  },
+  {
+    "surface": "matsumura",
+    "reading": "マツムラ"
+  },
+  {
+    "surface": "mitsuru",
+    "reading": "ミツル"
+  },
+  {
+    "surface": "atsushi",
+    "reading": "アツシ"
+  },
+  {
+    "surface": "pizza",
+    "reading": "ピザ"
+  },
+  {
+    "surface": "pizzas",
+    "reading": "ピザズ"
+  },
+  {
+    "surface": "pantsuit",
+    "reading": "パンツスーツ"
+  },
+  {
+    "surface": "patsy",
+    "reading": "パッツィ"
+  },
+  {
+    "surface": "pulitzer",
+    "reading": "ピューリッツァー"
+  },
+  {
+    "surface": "mozzarella",
+    "reading": "モッツァレラ"
+  },
+  {
+    "surface": "switzerland",
+    "reading": "スイス"
+  },
+  {
+    "surface": "bestseller",
+    "reading": "ベストセラー"
+  },
+  {
+    "surface": "watson",
+    "reading": "ワトソン"
+  },
+  {
+    "surface": "tanaka",
+    "reading": "タナカ"
   }
 ]
