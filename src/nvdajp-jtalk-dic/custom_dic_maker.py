@@ -49,6 +49,23 @@ jdic = [
 	["com", "コム", "1/2"],
 	["director", "ダイレクター", "1/5"],
 	["directors", "ダイレクターズ", "1/6"],
+	# Japanese proper names with common readings
+	["suzuki", "スズキ", "0/3"],
+	# Reported regressions: compass, company, originate(d), etc.
+	["compass", "コンパス", "1/4"],
+	["company", "カンパニー", "1/4"],
+	["originate", "オリジネイト", "3/6"],
+	["originated", "オリジネイティド", "4/7"],
+	["originates", "オリジネイツ", "4/7"],
+	["originating", "オリジネイティング", "4/7"],
+	# Essential English function words / prepositions (excluded from cmudict due to <= 2 len)
+	["of", "オブ", "1/2"],
+	["to", "トゥー", "1/2"],
+	["for", "フォー", "1/2"],
+	["in", "イン", "1/2"],
+	["at", "アット", "1/2"],
+	["by", "バイ", "1/2"],
+	["on", "オン", "1/2"],
 	# ER0+AY1 pattern: V-ER0-AY1-AH0 -> "アライ" (variety, parietal)
 	["variety", "バライアティー", "3/7"],
 	["varieties", "バライアティーズ", "3/8"],

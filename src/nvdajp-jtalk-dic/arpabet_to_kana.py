@@ -187,14 +187,26 @@ def _morae_with_stress(phonemes):
             # is the English "-ts"/"-dz" affricate ending (lights, results,
             # insights, words...): a single "ツ"/"ズ" mora, not two separate
             # codas (avoids "insights" -> インサイトス instead of インサイツ).
-            if ph == "T" and nxt == "S":
-                result.append(("ツ", None))
-                i += 2
-                continue
-            if ph == "D" and nxt == "Z":
-                result.append(("ズ", None))
-                i += 2
-                continue
+            # ONLY apply when S/Z is word-final or followed by a non-vowel,
+            # NOT when S/Z is followed by a vowel/diphthong (e.g. "outside"
+            # AW-T-S-AY-D -> "アウトサイド", "itself" IH-T-S-EH-L-F -> "イットセルフ").
+            sz_has_following_vowel = (
+                i + 2 < n
+                and (
+                    bases[i + 2] in _VOWEL_KEYS
+                    or bases[i + 2] in DIPHTHONG_PARTS
+                    or bases[i + 2] == "ER"
+                )
+            )
+            if not sz_has_following_vowel:
+                if ph == "T" and nxt == "S":
+                    result.append(("ツ", None))
+                    i += 2
+                    continue
+                if ph == "D" and nxt == "Z":
+                    result.append(("ズ", None))
+                    i += 2
+                    continue
             # Velar nasal NG immediately followed by K is realized as "ンク"
             # (not "ング" + "ク") when K begins a new syllable marker, e.g.
             # "functions" -> ファンクションズ.  When K is followed by a vowel

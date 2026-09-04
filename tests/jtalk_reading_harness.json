@@ -109,5 +109,56 @@
   {
     "surface": "monument",
     "reading": "モニュメント"
+  },
+  {
+    "note": "Regression cases for reported JTalk English reading regressions (issue: compass, originated, outside, of, suzuki, etc.)"
+  },
+  {
+    "surface": "outside",
+    "reading": "アウトサイド"
+  },
+  {
+    "surface": "compass",
+    "reading": "コンパス"
+  },
+  {
+    "surface": "suzuki",
+    "reading": "スズキ"
+  },
+  {
+    "surface": "of",
+    "reading": "オブ"
+  },
+  {
+    "surface": "originated",
+    "reading": "オリジネイティド"
+  },
+  {
+    "surface": "originate",
+    "reading": "オリジネイト"
+  },
+  {
+    "surface": "company",
+    "reading": "カンパニー"
+  },
+  {
+    "surface": "itself",
+    "reading": "イットセルフ"
+  },
+  {
+    "surface": "for",
+    "reading": "フォー"
+  },
+  {
+    "surface": "in",
+    "reading": "イン"
+  },
+  {
+    "surface": "to",
+    "reading": "トゥー"
+  },
+  {
+    "surface": "at",
+    "reading": "アット"
   }
 ]
