@@ -52,8 +52,8 @@ jdic = [
 	# Japanese proper names with common readings
 	["suzuki", "スズキ", "0/3"],
 	# Japanese loanwords in English (martial arts, culture, food, brands)
-	["jujitsu", "ジュウジュツ", "0/4"],
-	["jiujitsu", "ジュウジュツ", "0/4"],
+	["jujitsu", "ジュウジツ", "0/4"],
+	["jiujitsu", "ジュウジツ", "0/4"],
 	["jujutsu", "ジュウジュツ", "0/4"],
 	["judo", "ジュウドウ", "0/4"],
 	["karate", "カラテ", "0/3"],
@@ -121,7 +121,7 @@ jdic = [
 	["patsy", "パッツィ", "1/3"],
 	["pulitzer", "ピューリッツァー", "3/6"],
 	["mozzarella", "モッツァレラ", "3/5"],
-	["switzerland", "スイス", "1/3"],
+	["switzerland", "スウィッツァーランド", "4/8"],
 	["schizophrenia", "スキゾフレニア", "4/6"],
 	["schweitzer", "シュバイツァー", "3/5"],
 	["seltzer", "セルツァー", "1/4"],
@@ -354,7 +354,7 @@ jdic = [
 	["personalized", "パーソナライズド", "1/9"],
 	# Long compound words
 	["environmentalist", "エンバイロンメンタリスト", "3/11"],
-	["environmentalists", "エンバイロンメンタリスト", "3/11"],
+	["environmentalists", "エンバイロンメンタリスツ", "3/12"],
 	# Japanese-origin proper names (romaji reading)
 	["matsui", "マツイ", "1/3"],
 	["tetsuo", "テツオ", "1/3"],
@@ -364,10 +364,10 @@ jdic = [
 	["aoi", "アオイ", "1/3"],
 	["aida", "アイダ", "1/3"],
 	# Acronyms/initialisms: spell out each letter
-	["ceo", "シイオ", "0/3"],
-	["cia", "シアイエイ", "0/5"],
-	["aol", "エイオウエル", "0/5"],
-	["iou", "アイオウユ", "0/5"],
+	["ceo", "シーイーオー", "1/6"],
+	["cia", "シーアイエー", "1/6"],
+	["aol", "エーオーエル", "1/6"],
+	["iou", "アイオーユー", "1/6"],
 	["sos", "エスオーエス", "0/5"],
 	["baa", "ビーエイエイ", "0/5"],
 	# Short proper names

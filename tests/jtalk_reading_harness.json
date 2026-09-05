@@ -166,11 +166,11 @@
   },
   {
     "surface": "jujitsu",
-    "reading": "ジュウジュツ"
+    "reading": "ジュウジツ"
   },
   {
     "surface": "jiujitsu",
-    "reading": "ジュウジュツ"
+    "reading": "ジュウジツ"
   },
   {
     "surface": "judo",
@@ -277,7 +277,15 @@
   },
   {
     "surface": "switzerland",
-    "reading": "スイス"
+    "reading": "スウィッツァーランド"
+  },
+  {
+    "surface": "environmentalists",
+    "reading": "エンバイロンメンタリスツ"
+  },
+  {
+    "surface": "ceo",
+    "reading": "シーイーオー"
   },
   {
     "surface": "bestseller",
