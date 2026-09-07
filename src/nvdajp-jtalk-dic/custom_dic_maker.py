@@ -111,6 +111,64 @@ jdic = [
 	["mailbox", "メールボックス", "4/7"],
 	["mailboxes", "メールボックシーズ", "4/8"],
 	["xbox", "エックスボックス", "4/7"],
+	# authenticator and derivatives
+	["authenticator", "オーセンティケーター", "5/9"],
+	["Authenticator", "オーセンティケーター", "5/9"],
+	["authenticate", "オーセンティケート", "5/8"],
+	["authenticated", "オーセンティケイテッド", "5/10"],
+	["authentication", "オーセンティケーション", "5/9"],
+	# copyright, copy, and derivatives
+	["copyright", "コピーライト", "3/6"],
+	["Copyright", "コピーライト", "3/6"],
+	["copy", "コピー", "1/3"],
+	["Copy", "コピー", "1/3"],
+	["copies", "コピーズ", "1/4"],
+	["copied", "コピード", "1/4"],
+	["copying", "コピーイング", "1/6"],
+	# GNU
+	["gnu", "グニュー", "1/3"],
+	["GNU", "グニュー", "1/3"],
+	# NonVisual and visual
+	["nonvisual", "ノンビジュアル", "4/6"],
+	["NonVisual", "ノンビジュアル", "4/6"],
+	["NONVISUAL", "ノンビジュアル", "4/6"],
+	["visual", "ビジュアル", "2/4"],
+	["Visual", "ビジュアル", "2/4"],
+	["visuals", "ビジュアルズ", "2/5"],
+	["Visuals", "ビジュアルズ", "2/5"],
+	# secure and derivatives
+	["secure", "セキュア", "2/3"],
+	["Secure", "セキュア", "2/3"],
+	["secured", "セキュアード", "2/5"],
+	["securing", "セキュアリング", "2/6"],
+	["security", "セキュリティ", "2/4"],
+	["Security", "セキュリティ", "2/4"],
+	["securities", "セキュリティーズ", "2/6"],
+	# office and offices
+	["office", "オフィス", "1/4"],
+	["Office", "オフィス", "1/4"],
+	["offices", "オフィシズ", "1/4"],
+	["Offices", "オフィシズ", "1/4"],
+	# service and services
+	["service", "サービス", "1/4"],
+	["Service", "サービス", "1/4"],
+	["services", "サービシズ", "1/5"],
+	["Services", "サービシズ", "1/5"],
+	# problem and problems
+	["problem", "プロブレム", "2/5"],
+	["Problem", "プロブレム", "2/5"],
+	["problems", "プロブレムズ", "2/6"],
+	["Problems", "プロブレムズ", "2/6"],
+	# project and projects
+	["project", "プロジェクト", "2/5"],
+	["Project", "プロジェクト", "2/5"],
+	["projects", "プロジェクトズ", "2/6"],
+	["Projects", "プロジェクトズ", "2/6"],
+	# product and products
+	["product", "プロダクト", "2/5"],
+	["Product", "プロダクト", "2/5"],
+	["products", "プロダクツ", "2/5"],
+	["Products", "プロダクツ", "2/5"],
 	# Japanese proper names with common readings
 	["suzuki", "スズキ", "0/3"],
 	# Japanese loanwords in English (martial arts, culture, food, brands)

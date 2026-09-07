@@ -633,6 +633,35 @@ EXCLUDED_WORDS = frozenset((
     "sandbox",
     "toolbox",
     "xbox",
+    # Phase 1 overrides (custom_dic_maker.py)
+    "authenticator",
+    "authenticate",
+    "authenticated",
+    "authentication",
+    "copyright",
+    "copy",
+    "copies",
+    "copied",
+    "copying",
+    "gnu",
+    "nonvisual",
+    "visual",
+    "visuals",
+    "secure",
+    "secured",
+    "securing",
+    "security",
+    "securities",
+    "office",
+    "offices",
+    "service",
+    "services",
+    "problem",
+    "problems",
+    "project",
+    "projects",
+    "product",
+    "products",
 ))
 
 
@@ -657,9 +686,9 @@ def make_dic(CODE, THISDIR):
             if word.lower() in EXCLUDED_WORDS:
                 continue
             k1 = _to_mecab_surface(word)
-            braille = arpabet_to_kana(phonemes)
+            braille = arpabet_to_kana(phonemes, word=word)
             speech = kana_speech_safe(braille)
-            accent = arpabet_to_accent(phonemes)
+            accent = arpabet_to_accent(phonemes, word=word)
             # 表層形,左文脈ID,右文脈ID,コスト,品詞,品詞細分類1,品詞細分類2,品詞細分類3,活用形,活用型,原形,読み,発音,アクセント,C0,braille
             s = "%s,0,0,%d,%s,%s,%s,%s,%s,C0,%s\n" % (
                 k1, COST, POS, k1, speech, speech, accent, braille,

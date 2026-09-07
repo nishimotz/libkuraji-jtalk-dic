@@ -30,7 +30,7 @@
   },
   {
     "surface": "functions",
-    "reading": "ファンクシュンズ"
+    "reading": "ファンクションズ"
   },
   {
     "surface": "cancelled",
@@ -346,5 +346,110 @@
   {
     "surface": "textbox",
     "reading": "テキストボックス"
+  },
+  {
+    "note": "Phase 1: High priority manual overrides"
+  },
+  {
+    "surface": "authenticator",
+    "reading": "オーセンティケーター"
+  },
+  {
+    "surface": "copyright",
+    "reading": "コピーライト"
+  },
+  {
+    "surface": "copy",
+    "reading": "コピー"
+  },
+  {
+    "surface": "copies",
+    "reading": "コピーズ"
+  },
+  {
+    "surface": "gnu",
+    "reading": "グニュー"
+  },
+  {
+    "surface": "GNU",
+    "reading": "グニュー"
+  },
+  {
+    "surface": "nonvisual",
+    "reading": "ノンビジュアル"
+  },
+  {
+    "surface": "NonVisual",
+    "reading": "ノンビジュアル"
+  },
+  {
+    "surface": "visual",
+    "reading": "ビジュアル"
+  },
+  {
+    "surface": "secure",
+    "reading": "セキュア"
+  },
+  {
+    "surface": "security",
+    "reading": "セキュリティ"
+  },
+  {
+    "surface": "offices",
+    "reading": "オフィシズ"
+  },
+  {
+    "note": "Phase 2: Plurals and -tion/-sion suffixes"
+  },
+  {
+    "surface": "services",
+    "reading": "サービシズ"
+  },
+  {
+    "surface": "devices",
+    "reading": "ディバイシズ"
+  },
+  {
+    "surface": "places",
+    "reading": "プレイシズ"
+  },
+  {
+    "surface": "option",
+    "reading": "オプション"
+  },
+  {
+    "surface": "action",
+    "reading": "アクション"
+  },
+  {
+    "surface": "section",
+    "reading": "セクション"
+  },
+  {
+    "note": "Phase 3: Spelling-aware AA with 'o'"
+  },
+  {
+    "surface": "hot",
+    "reading": "ホット"
+  },
+  {
+    "surface": "stop",
+    "reading": "ストップ"
+  },
+  {
+    "surface": "project",
+    "reading": "プロジェクト"
+  },
+  {
+    "surface": "process",
+    "reading": "プロセス"
+  },
+  {
+    "surface": "problem",
+    "reading": "プロブレム"
+  },
+  {
+    "surface": "product",
+    "reading": "プロダクト"
   }
 ]

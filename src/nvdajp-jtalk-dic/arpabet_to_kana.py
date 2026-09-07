@@ -17,6 +17,8 @@
 # established spelling. Such cases are handled as individual overrides
 # in custom_dic_maker.py, not by further generalizing this module.
 
+import re
+
 VOWELS = {
     "AA": "ア", "AE": "ア", "AH": "ア", "AO": "オ",
     "EH": "エ", "IH": "イ", "IY": "イー", "UH": "ウ", "UW": "ウー",
@@ -61,6 +63,9 @@ CONSONANTS = {
 }
 
 _VOWEL_KEYS = {"AA": "a", "AE": "a", "AH": "a", "AO": "o", "EH": "e", "IH": "i", "IY": "i", "UH": "u", "UW": "u"}
+_CMU_VOWEL_BASES = {
+    "AA", "AE", "AH", "AO", "AW", "AY", "EH", "ER", "EY", "IH", "IY", "OW", "OY", "UH", "UW",
+}
 
 
 def _strip_stress(phoneme):
@@ -84,7 +89,34 @@ def _split_morae(s):
     return morae
 
 
-def _morae_with_stress(phonemes):
+def _find_spelled_vowels_for_aa(word, phonemes):
+    """Align AA phonemes with spelled vowel clusters in word to detect 'o'."""
+    if not word:
+        return set()
+    spelled_vowels = re.findall(r"[aeiouy]+", word.lower())
+    cmu_vowels = []
+    for idx, p in enumerate(phonemes):
+        base, _ = _strip_stress(p)
+        if base in _CMU_VOWEL_BASES:
+            cmu_vowels.append((idx, base))
+
+    aa_is_o = set()
+    n_s = len(spelled_vowels)
+    n_c = len(cmu_vowels)
+    for v_i, (p_idx, base) in enumerate(cmu_vowels):
+        if base == "AA":
+            if n_s == n_c:
+                s_v = spelled_vowels[v_i]
+            else:
+                s_i = int(round(v_i * n_s / max(1, n_c)))
+                s_i = min(s_i, n_s - 1)
+                s_v = spelled_vowels[s_i] if spelled_vowels else ""
+            if "o" in s_v:
+                aa_is_o.add(p_idx)
+    return aa_is_o
+
+
+def _morae_with_stress(phonemes, word=""):
     """Return a list of (mora_str, stress_or_None) pairs.
 
     stress is the ARPAbet stress digit ('0'/'1'/'2') of the vowel that
@@ -94,6 +126,7 @@ def _morae_with_stress(phonemes):
     stressed = [_strip_stress(p) for p in phonemes]
     bases = [b for b, _ in stressed]
     stresses = [s for _, s in stressed]
+    aa_is_o_indices = _find_spelled_vowels_for_aa(word, phonemes)
     result = []
     i = 0
     n = len(bases)
@@ -127,7 +160,12 @@ def _morae_with_stress(phonemes):
             i += 1
             continue
         if ph in VOWELS:
-            kana = VOWELS[ph]
+            # When ARPAbet AA (/ɑ/) is spelled with "o" in English orthography,
+            # adapt to オ-row rather than ア-row (Phase 3).
+            if ph == "AA" and i in aa_is_o_indices:
+                kana = "オ"
+            else:
+                kana = VOWELS[ph]
             # Unstressed rhotic schwa (ER0) at word start is realized as
             # "ア" (one mora), not "アー" (two morae), matching established
             # loanword spellings: arena -> アリーナ, arise -> アライズ.
@@ -140,6 +178,39 @@ def _morae_with_stress(phonemes):
             continue
         if ph in CONSONANTS:
             nxt = bases[i + 1] if i + 1 < n else None
+            # Sibilant + unstressed AH0 + Z (word-final or pre-boundary plurals:
+            # offices, services, devices, places, pages, choices, sizes).
+            # Plural "-es" after sibilants is /ɪz/ or /əz/ (AH0 Z in CMUdict).
+            # Japanese loanwords adapt this as "シズ"/"ジズ"/"チズ", not "-サズ"/"-ジャズ".
+            if (
+                ph in ("S", "Z", "SH", "CH", "JH")
+                and i + 2 < n
+                and bases[i + 1] == "AH"
+                and stresses[i + 1] == "0"
+                and bases[i + 2] == "Z"
+                and (i + 3 == n or bases[i + 3] not in _VOWEL_KEYS)
+            ):
+                i_row = {"S": "シ", "Z": "ジ", "SH": "シ", "CH": "チ", "JH": "ジ"}[ph]
+                result.append((i_row, None))
+                result.append(("ズ", None))
+                i += 3
+                continue
+            # Suffix -tion / -sion (SH/ZH + AH0 + N) -> ション / ジョン:
+            # English "-tion" / "-sion" (/ʃən/, /ʒən/) is adapted in Japanese
+            # loanwords as ション / ジョン (option, action, section, function, version),
+            # not coda + consonant (avoiding "-シュン"/"-ジュン").
+            if (
+                ph in ("SH", "ZH")
+                and i + 2 < n
+                and bases[i + 1] == "AH"
+                and stresses[i + 1] == "0"
+                and bases[i + 2] == "N"
+                and (i + 3 == n or bases[i + 3] not in _VOWEL_KEYS)
+            ):
+                suffix = "ション" if ph == "SH" else "ジョン"
+                result.append((suffix, None))
+                i += 3
+                continue
             # ER + IY0 contraction: when a rhotic schwa (stressed or
             # unstressed) is immediately followed by an unstressed /i/
             # (IY0), the two vowels collapse to a single "リー" mora,
@@ -405,7 +476,13 @@ def _morae_with_stress(phonemes):
                 i += 2  # skip this consonant and the schwa; sonorant handled next loop
                 continue
             if nxt in _VOWEL_KEYS:
-                kana = CONSONANTS[ph][_VOWEL_KEYS[nxt]]
+                # When ARPAbet AA (/ɑ/) is spelled with "o" in English orthography,
+                # adapt to オ-row rather than ア-row (Phase 3).
+                if nxt == "AA" and (i + 1) in aa_is_o_indices:
+                    vkey = "o"
+                else:
+                    vkey = _VOWEL_KEYS[nxt]
+                kana = CONSONANTS[ph][vkey]
                 morae = _split_morae(kana)
                 # the vowel's stress belongs to the last mora of the combo
                 # (e.g. NG "ン" + "ガ": stress belongs to "ガ")
@@ -415,10 +492,17 @@ def _morae_with_stress(phonemes):
                 continue
             # a short vowel (not the long IY/UW, ER, or a diphthong -
             # those are handled above and don't geminate the same way)
-            # directly followed by a word-final/pre-consonant voiceless
-            # stop is realized with a geminate (small tsu): "input" IH-N-
-            # P-UH-T -> ...プ + ッ + ト ("インプット"), not "...プト".
-            if ph in ("P", "T", "K", "CH") and i > 0 and bases[i - 1] in _VOWEL_KEYS:
+            # directly followed by a word-final voiceless stop is realized
+            # with a geminate (small tsu): "input" IH-N-P-UH-T -> ...プ + ッ + ト
+            # ("インプット"), "hot" HH-AA-T -> ホット, "stop" S-T-AA-P -> ストップ.
+            # Medial clusters (e.g. option P+SH, action K+SH, project K+T)
+            # do not geminate in Japanese loanwords.
+            if (
+                ph in ("P", "T", "K", "CH")
+                and i > 0
+                and bases[i - 1] in _VOWEL_KEYS
+                and (i + 1 == n)
+            ):
                 result.append(("ッ", None))
             result.append((CONSONANTS[ph]["coda"], None))
             i += 1
@@ -428,7 +512,7 @@ def _morae_with_stress(phonemes):
     return result
 
 
-def arpabet_to_kana(phonemes):
+def arpabet_to_kana(phonemes, word=""):
     """Convert a list of ARPAbet phonemes (e.g. ['P', 'AW1', 'ER0']) to katakana.
 
     First-pass approximation only: does not model gemination (soku-on)
@@ -436,7 +520,7 @@ def arpabet_to_kana(phonemes):
     non-rhotic vowel-R sequences beyond the simple "coda R lengthens
     the previous vowel" rule.
     """
-    raw = "".join(m for m, _ in _morae_with_stress(phonemes))
+    raw = "".join(m for m, _ in _morae_with_stress(phonemes, word=word))
     # Collapse consecutive long-vowel morae into one.  The ARPAbet rules
     # can produce sequences like "フェーー" for "fairer" (EH + coda R + ER)
     # because both the coda R and the following rhotic schwa add a "ー".
@@ -464,7 +548,7 @@ def kana_speech_safe(kana):
     return kana
 
 
-def arpabet_to_accent(phonemes):
+def arpabet_to_accent(phonemes, word=""):
     """Rough heuristic accent-position guess, as "position/moraCount".
 
     Places the accent drop immediately after the mora carrying English
@@ -475,7 +559,7 @@ def arpabet_to_accent(phonemes):
     directly (e.g. words ending in "-ン" are frequently heiban
     regardless of English stress position).
     """
-    morae = _morae_with_stress(phonemes)
+    morae = _morae_with_stress(phonemes, word=word)
     total = len(morae)
     primary = next((i for i, (_, s) in enumerate(morae) if s == "1"), None)
     if primary is None or primary == total - 1:
@@ -494,7 +578,7 @@ if __name__ == "__main__":
             continue
         parts = line.split()
         word, phonemes = parts[0], parts[1:]
-        braille = arpabet_to_kana(phonemes)
+        braille = arpabet_to_kana(phonemes, word=word)
         speech = kana_speech_safe(braille)
-        accent = arpabet_to_accent(phonemes)
+        accent = arpabet_to_accent(phonemes, word=word)
         print(f"{word}\t{' '.join(phonemes)}\tbraille={braille}\tspeech={speech}\taccent={accent}")
