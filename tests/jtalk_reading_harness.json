@@ -298,5 +298,53 @@
   {
     "surface": "tanaka",
     "reading": "タナカ"
+  },
+  {
+    "surface": "dropbox",
+    "reading": "ドロップボックス"
+  },
+  {
+    "surface": "python",
+    "reading": "パイソン"
+  },
+  {
+    "surface": "microsoft",
+    "reading": "マイクロソフト"
+  },
+  {
+    "surface": "copilot",
+    "reading": "コパイロット"
+  },
+  {
+    "surface": "copilots",
+    "reading": "コパイロッツ"
+  },
+  {
+    "surface": "connect",
+    "reading": "コネクト"
+  },
+  {
+    "surface": "connected",
+    "reading": "コネクテッド"
+  },
+  {
+    "surface": "connection",
+    "reading": "コネクション"
+  },
+  {
+    "surface": "box",
+    "reading": "ボックス"
+  },
+  {
+    "surface": "boxes",
+    "reading": "ボックシーズ"
+  },
+  {
+    "surface": "checkbox",
+    "reading": "チェックボックス"
+  },
+  {
+    "surface": "textbox",
+    "reading": "テキストボックス"
   }
 ]
