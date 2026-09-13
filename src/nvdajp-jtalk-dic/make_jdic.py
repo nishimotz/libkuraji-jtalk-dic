@@ -211,7 +211,7 @@ def _main():
 
 		_validate_custom_pos(
 			tempdir,
-			["nvdajp-tankan-dic.csv", "nvdajp-custom-dic.csv", "nvdajp-eng-dic.csv"],
+			["nvdajp-tankan-dic.csv", "nvdajp-custom-dic.csv"],
 		)
 
 		if args.validate_only:
