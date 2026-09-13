@@ -4,20 +4,15 @@
 # License: BSD 3-Clause. See LICENSE.
 #
 # Build the JTalk extended dictionary (NAIST-JDIC + nvdajp custom entries)
-# with a prebuilt mecab-dict-index tool. This dictionary is shared by JTalk
-# speech synthesis and libkuraji's word-separation stage (translator2); see
-# ../../README.md.
+# with a prebuilt mecab-dict-index tool. This dictionary is built for
+# libkuraji's word-separation stage (translator2); see README.md.
 #
 # mecab-dict-index is not vendored here: build it from MeCab source (BSD/
-# LGPL/GPL tri-license) or obtain it from an nvdajp checkout after running
-# `scons jtalkSync`.
+# LGPL/GPL tri-license) or obtain it from GitHub Releases.
 #
-# Unlike nvdajp's own build, this does not include the English word-reading
-# entries (nvdajp-eng-dic.csv, built from bep-eng.dic by eng_dic_maker.py in
-# nvdajp): bep-eng.dic is a third-party GPL-licensed dictionary (from the
-# CPAN module Lingua::JA::Yomi), incompatible with this repository's BSD
-# 3-Clause license. That is not a problem for nvdajp itself (nvdajp as a
-# whole is GPL-licensed), but it is for a BSD-licensed extraction.
+# This dictionary does not include general English word-reading entries
+# (nvdajp-eng-dic.csv). For JTalk speech synthesis with bep-eng.dic English
+# readings, use nvdajp/nvdajp-jtalk-dic (GPL-2.0).
 
 import argparse
 import os
@@ -28,7 +23,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import custom_dic_maker
-import eng_dic_maker
 import tankan_dic_maker
 from filter_jdic import filter_jdic
 
@@ -179,13 +173,11 @@ def _main():
 
 		tankan_dic_maker.make_dic(code, cs_file, thisdir)
 		custom_dic_maker.make_dic(code, thisdir)
-		eng_dic_maker.make_dic(code, thisdir)
 
 		files = [
 			"dicrc",
 			"nvdajp-tankan-dic.csv",
 			"nvdajp-custom-dic.csv",
-			"nvdajp-eng-dic.csv",
 		]
 
 		euc_files = [
@@ -219,7 +211,7 @@ def _main():
 
 		_validate_custom_pos(
 			tempdir,
-			["nvdajp-tankan-dic.csv", "nvdajp-custom-dic.csv", "nvdajp-eng-dic.csv"],
+			["nvdajp-tankan-dic.csv", "nvdajp-custom-dic.csv"],
 		)
 
 		if args.validate_only:
