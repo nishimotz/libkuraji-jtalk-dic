@@ -3,7 +3,7 @@
 These tests exercise the built dictionary directly through MeCab and verify that
 the returned katakana reading matches the expected value. They are intentionally
 NOT end-to-end tests for NVDA/JTalk/libkuraji final output; their only purpose is
-to catch regressions in the dictionary source (nvdajp-eng-dic.csv, etc.).
+to catch regressions in the dictionary source (nvdajp-custom-dic.csv, etc.).
 
 Run after `make_jdic.py` has produced build/dic/:
     python tests/test_dic_reading.py

@@ -4,7 +4,7 @@ JTalk 拡張辞書（NAIST-JDIC + nvdajp 独自拡張）のビルドレシピ。
 
 この辞書は Open JTalk 系の日本語形態素解析辞書 [NAIST-JDIC](http://naist-jdic.sourceforge.jp/) をベースに、NVDA 日本語版（nvdajp）が読み・アクセント推定の改善と点訳表記フィールドのために追加した拡張エントリ（`nvdajp-custom-dic`、`nvdajp-tankan-dic`）を加えたものです。
 
-**nvdajp 本体との差分**: nvdajp は英単語の読み推定用に `nvdajp-eng-dic`（`bep-eng.dic` から生成）も追加していますが、`bep-eng.dic` は第三者（CPAN モジュール `Lingua::JA::Yomi`、著作者 M.Ohtsuka/mash）の GPL ライセンスのデータであり、GPL 全体である nvdajp では問題ありませんが、本リポジトリは BSD 3-Clause として公開しているため同梱していません。代わりに、本リポジトリ独自の `nvdajp-eng-dic`（`eng_dic_maker.py`、permissive ライセンスの [CMUdict](https://github.com/cmusphinx/cmudict) から ARPAbet 発音記号をルールベースでカナに変換して生成、詳細は `src/nvdajp-jtalk-dic/eng-dic-source/README.md`）を同梱しています。bep-eng.dic 由来の読みとは一致しません（変換ルールの精度については同ディレクトリの `arpabet_to_kana.py` のモジュール docstring を参照）。
+**英単語辞書について**: 本リポジトリは点訳エンジン [libkuraji](https://github.com/nishimotz/libkuraji) 向けの軽量形態素辞書（BSD 3-Clause）であり、一般的な英単語の読み辞書（`nvdajp-eng-dic`）は同梱していません（点訳処理では英単語はアルファベット綴りで表記されるため、カタカナ読み辞書を必要としません）。NVDA 日本語版（nvdajp）の JTalk 音声合成で `bep-eng.dic` を含む完全な英単語発音辞書を利用する場合は、[nvdajp/nvdajp-jtalk-dic](https://github.com/nvdajp/nvdajp-jtalk-dic)（GPL-2.0）を利用してください。
 
 **この辞書は単一のプロジェクトの所有物ではなく、共有資産です:**
 - **JTalk**（[nvdajp](https://github.com/nvdajp/nvdajp) の音声合成エンジン）が読み・アクセント推定に使用します。
@@ -67,9 +67,9 @@ BSD 3-Clause License. 詳細は [LICENSE](LICENSE) を参照。NAIST-JDIC・MeCa
 
 ## nvdajp との関係
 
-このリポジトリは nvdajp の `miscDepsJp/jptools/jtalk/`（レシピ）と `miscDepsJp/include/python-jtalk/libopenjtalk/mecab/`（MeCab ソース）から抽出したものです。nvdajp 自身のビルド（`scons jtalkSync`）は現時点ではこのリポジトリに依存せず、従来どおり内部のコピーでビルドします。
+このリポジトリは nvdajp の `miscDepsJp/jptools/jtalk/`（レシピ）と `miscDepsJp/include/python-jtalk/libopenjtalk/mecab/`（MeCab ソース）から抽出したものです。点訳エンジン [libkuraji](https://github.com/nishimotz/libkuraji) の形態素解析・分かち書きに必要な最小限の拡張辞書（BSD 3-Clause）を提供します。
 
-nvdajp 側では「JTalk 領域は外部取得なしで完全統合管理する」という方針が原則ですが、この辞書は JTalk と libkuraji の共有資産であるため、ビルド時に本リポジトリの成果物を任意で取得できるようにする方針転換を行っています。詳細は nvdajp の `projectDocs/jp/vendor-submodules.md`（「辞書のビルド時取得（方針転換）」節）を参照してください。
+NVDA 日本語版（nvdajp）の音声合成辞書としては、`bep-eng.dic` を同梱した [nvdajp/nvdajp-jtalk-dic](https://github.com/nvdajp/nvdajp-jtalk-dic)（GPL-2.0）が正本として利用されます。
 
 ## CI
 
